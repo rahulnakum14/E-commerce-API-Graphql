@@ -1,0 +1,17 @@
+type Query {
+  verifyEmail(signupToken: String!): VerifyEmailResponse!
+  getUsers: [User]!
+}
+
+type Mutation {
+  "Add user"
+  registerUser(username: String!, email: String!, password: String!): UserResponse!
+
+  "Login User"
+  loginUser(username: String!, password: String!): UserLoginData!
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}

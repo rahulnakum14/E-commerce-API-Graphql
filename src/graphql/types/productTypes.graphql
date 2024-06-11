@@ -1,0 +1,11 @@
+type Product {
+  id: ID!
+  product_name: String!
+  product_price: String!
+}
+
+type ProductResponse {
+  success: Boolean!
+  message: String
+  data: Product!
+}
