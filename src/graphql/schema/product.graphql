@@ -1,4 +1,5 @@
 type Query {
+  "Get All Products"
   getProducts: [Product!]!
 }
 
@@ -7,13 +8,19 @@ type Mutation {
   createProduct(product_name: String!, product_price: String!): ProductResponse!
 
   "Update Product"
-  updateProduct(id:ID!, product_name: String, product_price: String): ProductResponse!
+  updateProduct(
+    id: ID!
+    product_name: String
+    product_price: String
+  ): ProductResponse!
 
   "Delete Product"
-  deleteProduct(id:ID!):ProductResponse!
+  deleteProduct(id: ID!): ProductResponse!
 }
 
 schema {
   query: Query
   mutation: Mutation
 }
+
+# parent,args,context,info

@@ -36,7 +36,7 @@ class UserService {
     message: string;
     data?: UserAttributes;
   }> {
-    if (!validateUser(username, email, password)) {
+    if (!validateUser(username,password, email)) {
       throw new ValidationError(UserMessage.Validation);
     }
 
@@ -88,9 +88,14 @@ class UserService {
       throw new ValidationError(UserMessage.Validation);
     }
 
+
+
     // Check if the user exists
     const user = await UserModel.findOne({ username });
+
+
     if (!user) {
+      console.log('this is from user services login. 1.');
       logger.warn(UserMessage.InvalidCredentials);
       throw new InvalidCredentialsError(UserMessage.InvalidCredentials);
     }
@@ -101,9 +106,13 @@ class UserService {
       throw new VerificationEmailError(UserMessage.VerifyEmailFailed);
     }
 
+
     // Check if the password is correct
     const isMatch = await bcrypt.compare(password, user.password);
+
     if (!isMatch) {
+      console.log('this is from user services login. 2.');
+
       logger.warn(UserMessage.InvalidCredentials);
       throw new InvalidCredentialsError(UserMessage.InvalidCredentials);
     }

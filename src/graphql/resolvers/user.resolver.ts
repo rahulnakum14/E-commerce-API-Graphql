@@ -73,14 +73,17 @@ const userResolvers = {
         } else {
           throw new ApolloError("Login failed");
         }
-      } catch (error) {
+      } catch (error) {        
         if (error instanceof CustomError) {
           if (
             error.code === "VALIDATION_ERROR" ||
             error.code === "EMAIL_VERIFICATION_FAILED" ||
             error.code === "INVALID_CREDENTIALS"
           ) {
+            console.log('abotu to throwing a new errrr',error.message);
+            
             throw new UserInputError(error.message);
+            
           }
         }
         throw new ApolloError(Errors.GenericError);
