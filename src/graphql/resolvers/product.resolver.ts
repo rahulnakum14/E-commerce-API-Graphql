@@ -3,25 +3,50 @@ import { CustomError } from "../../utills/custom_error";
 import productServices from "../../services/product.services";
 import logger from "../../utills/logger";
 import { Errors } from "../../utills/constants";
+import { GraphQLResolveInfo } from 'graphql';
+
+/** UserContext.ts */
+// import { BaseContext } from "@apollo/server";
+// import UserAttributes from "../types/userType";
+
+// interface UserContext extends BaseContext {
+//   user: UserAttributes; 
+// }
+
+// export default UserContext;
+
 
 const productResolvers = {
   Query: {
-    getProducts: async () => {
-      try {
-        return await productServices.getAllProducts();
-      } catch (error) {
-        logger.error(Errors.GetAllProductsError);
-        throw new ApolloError(Errors.GetAllProductsError);
+    getProducts: async ( 
+      parent: any, 
+      args: Record<string, any>,
+      context: any, //UserContext
+      info: GraphQLResolveInfo
+    ) => {
+      console.log('this is the context',context);
+      
+      if (!context.user) {
+        console.log('this is context user',context.user);
+        
+        throw new ApolloError(Errors.authenticated);
       }
+      return await productServices.getAllProducts();
     },
   },
 
   Mutation: {
     async createProduct(
       _: any,
-      args: { product_name: string; product_price: string }
+      args: Record<'product_name' | 'product_price', string>,
+      context: any, //UserContext
+      info: GraphQLResolveInfo
     ) {
       try {
+        // if(AuthMiddleware.restrictTo(context.user.role)){
+        //   console.log('allowed to access', context.user.role);
+        //   return;
+        // }
         const result = await productServices.createProduct(
           args.product_name,
           args.product_price

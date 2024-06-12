@@ -1,11 +1,17 @@
-import { ProductMessage } from "../utills/constants";
+import { Errors, ProductMessage } from "../utills/constants";
 import ProductModel from "../models/productModel";
 import ProductAttributes from "../types/productType";
 import { ValidationError } from "../utills/custom_error";
+import { ApolloError } from "apollo-server-errors";
+
 
 class ProductService {
   async getAllProducts(): Promise<ProductAttributes[]> {
-    return await ProductModel.find({});
+   try {
+     return await ProductModel.find({});
+   } catch (error) {
+    throw new ApolloError(Errors.GetAllProductsError);
+   }
   }
 
   async createProduct(

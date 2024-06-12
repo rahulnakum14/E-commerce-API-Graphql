@@ -34,10 +34,8 @@ const generateToken = (user: UserAttributes): Token | false => {
  */
 const validateToken = (token: Token): JwtPayload | false => {
   try {
-    console.log('Token', token);
     return jwt.verify(token, secretKey) as JwtPayload;
   } catch (error) {
-    console.error("Error validating token:", error);
     return false;
   }
 };

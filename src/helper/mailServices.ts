@@ -1,4 +1,5 @@
 // Defaults
+
 import nodemailer from "nodemailer";
 import { Request, Response } from "express";
 import path from "path";
@@ -37,9 +38,7 @@ const sendEmail = async (
   html: string,
   attachmentPath?: string
 ) => {
-  try {
-    console.log('test 2 ********************', process.env.EMAIL_USERNAME);
-    
+  try {   
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
