@@ -1,7 +1,7 @@
 import { GraphQLResolveInfo } from "graphql";
 import cartServices from "../../services/cart.services";
 import { ApolloError } from "apollo-server-errors";
-import { Errors } from "../../utills/constants";
+import { CartMessages, Errors } from "../../utills/constants";
 
 const cartResolvers = {
   Query: {
@@ -43,6 +43,32 @@ const cartResolvers = {
       } catch (error) {
         console.log(error);
         throw new Error("Error Form Resolver while adding product to cart.");
+      }
+    },
+
+    async removeProductCart(
+      _: any,
+      args: Record<"user.id" | "product_id" , string>,
+      context: any,
+      info: GraphQLResolveInfo
+    ) {
+      try {
+        const productremoved = await cartServices.removeProductCart(
+          context.user.id,
+          args.product_id,
+        );
+        if (productremoved.success) {
+          return {
+            success: productremoved.success,
+            message: productremoved.message,
+            data: productremoved.data,
+          };
+        } else {
+          throw new ApolloError(CartMessages.RemoveFromCartError);
+        }
+      } catch (error) {
+        console.log(error);
+        throw new Error("Error Form Resolver while removing product to cart.");
       }
     },
   },

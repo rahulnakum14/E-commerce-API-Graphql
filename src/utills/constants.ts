@@ -49,13 +49,12 @@ export const CartMessages = {
   ProductAdded: "Product added to cart successfully.",
 };
 
-
 export const Errors = {
-  EmailError:"Enter a valid email.",
-  TokenNotExist:"Unauthorized or Token does not exist",
-  TokenFormat:"Invalid token format",
-  InvalidToken:"Token is invalid",
-  authenticated:"User Is not authenticated",
+  EmailError: "Enter a valid email.",
+  TokenNotExist: "Unauthorized or Token does not exist",
+  TokenFormat: "Invalid token format",
+  InvalidToken: "Token is invalid",
+  authenticated: "User Is not authenticated",
   EmailVerifyError: "Internal Server Error while verifying email.",
   GetAllUsers: "Internal Server Error while fetching users.",
   signUpError: "Internal Server Error while Signup",
@@ -64,5 +63,5 @@ export const Errors = {
   GetAllProductsError: "Internal Server Error while fetching uproducts.",
   CreateProductError: "Internal Server Error while creating products.",
   CartDetailsError: "Internal Server Error while fetching CartDetails.",
-  GenericError:"Internal Server Error While running an applo server."
+  GenericError: "Internal Server Error While running an applo server.",
 };

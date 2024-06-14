@@ -8,6 +8,10 @@ type Mutation {
     product_id: String!
     quantity: String!
   ): CartResponse!
+  
+  removeProductCart(
+    product_id: String!
+  ): CartResponse!
 }
 
 schema {
