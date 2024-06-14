@@ -1,11 +1,16 @@
-import { ProductMessage } from "../utills/constants";
+import { Errors, ProductMessage } from "../utills/constants";
 import ProductModel from "../models/productModel";
 import ProductAttributes from "../types/productType";
 import { ValidationError } from "../utills/custom_error";
+import { ApolloError } from "apollo-server-errors";
 
 class ProductService {
   async getAllProducts(): Promise<ProductAttributes[]> {
-    return await ProductModel.find({});
+    try {
+      return await ProductModel.find({});
+    } catch (error) {
+      throw new ApolloError(Errors.GetAllProductsError);
+    }
   }
 
   async createProduct(
@@ -35,13 +40,13 @@ class ProductService {
   }
 
   async updateProduct(
-    id: string, 
-    product_name: string, 
+    id: string,
+    product_name: string,
     product_price: string
-  ):Promise<ProductAttributes | null>{
+  ): Promise<ProductAttributes | null> {
     return await ProductModel.findByIdAndUpdate(
       id,
-      { product_name,product_price},
+      { product_name, product_price },
       { new: true }
     );
   }
@@ -49,8 +54,6 @@ class ProductService {
   async deleteProduct(id: string): Promise<ProductAttributes | null> {
     return await ProductModel.findByIdAndDelete(id);
   }
-
-
 }
 
 export default new ProductService();

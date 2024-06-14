@@ -1,7 +1,7 @@
 /** Constant Of the User */
 
 export const UserMessage = {
-  Validation: "Please provide username, email, and password.",
+  Validation: "Please provide valid username, email, and password.",
   Exists: "Email or Username Is Already Exists.",
   RegisterSuccess: "User Registered Successfully.",
   NotFound: "User Not Found.",
@@ -51,6 +51,11 @@ export const CartMessages = {
 
 
 export const Errors = {
+  EmailError:"Enter a valid email.",
+  TokenNotExist:"Unauthorized or Token does not exist",
+  TokenFormat:"Invalid token format",
+  InvalidToken:"Token is invalid",
+  authenticated:"User Is not authenticated",
   EmailVerifyError: "Internal Server Error while verifying email.",
   GetAllUsers: "Internal Server Error while fetching users.",
   signUpError: "Internal Server Error while Signup",
@@ -58,5 +63,6 @@ export const Errors = {
   DeleteProductError: "Internal Server Error while Deleting the product",
   GetAllProductsError: "Internal Server Error while fetching uproducts.",
   CreateProductError: "Internal Server Error while creating products.",
+  CartDetailsError: "Internal Server Error while fetching CartDetails.",
   GenericError:"Internal Server Error While running an applo server."
 };

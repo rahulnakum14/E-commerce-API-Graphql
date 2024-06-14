@@ -31,6 +31,11 @@ export class ProductError extends CustomError {
     super(message, "PRODUCT");
   }
 }
+export class CartError extends CustomError {
+  constructor(message: string) {
+    super(message, "CART");
+  }
+}
 export class VerificationEmailError extends CustomError {
   constructor(message: string) {
     super(message, "EMAIL_VERIFICATION_FAILED");

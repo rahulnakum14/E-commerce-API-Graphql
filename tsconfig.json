@@ -1,22 +1,43 @@
 {
-    "compilerOptions": {
-      "lib": ["es6"],
-      "module": "commonjs",
-      "target": "es6",
-      "esModuleInterop": true,
-      "skipLibCheck": true,
-      "strict": true,
-      "noImplicitAny": false,
-      "moduleResolution": "node",
-      "resolveJsonModule": true,
-      "outDir": "./dist",
-      "rootDir": "./src",
-      "baseUrl": "./",
-      "paths": {
-        "*": ["node_modules/*"]
-      }
-    },
-    "include": ["src/**/*.ts"],
-    "exclude": ["node_modules"]
-  }
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "commonjs",
+    "lib": ["esnext", "dom"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
+
+// {
+//     "compilerOptions": {
+//       "lib": ["es6"],
+//       "module": "commonjs",
+//       "target": "es6",
+//       "esModuleInterop": true,
+//       "skipLibCheck": true,
+//       "strict": true,
+//       "noImplicitAny": false,
+//       "moduleResolution": "node",
+//       "resolveJsonModule": true,
+//       "outDir": "./dist",
+//       "rootDir": "./src",
+//       "baseUrl": "./",
+//       "paths": {
+//         "*": ["node_modules/*"]
+//       }
+//     },
+//     "include": ["src/**/*.ts"],
+//     "exclude": ["node_modules"]
+//   }
+  
   

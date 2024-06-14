@@ -10,9 +10,12 @@ import { sendErrorResponse, successResponse } from "../utills/responseHandler";
 // UserAttributes
 import UserAttributes from "../types/userType";
 
+import { ApolloError } from "apollo-server-errors";
+import { Errors } from "../utills/constants";
+
 /**
  * Middleware to authenticate the provided token in the request headers.
- * 
+ *
  * @param {Request} req - The Express Request object.
  * @param {Response} res - The Express Response object.
  * @param {NextFunction} next - The Express NextFunction to pass control to the next middleware.
@@ -21,36 +24,26 @@ import UserAttributes from "../types/userType";
  */
 class AuthMiddleware {
   async authenticateToken(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void | Response> { 
-    try {
-      const token: string | undefined = req.headers["authorization"];
-  
-      if (!token) {
-        return sendErrorResponse(res, 403, "Unauthorized or Token does not exist");
-      }
-  
-      const tokenSplit = token.split(" ")[1];
-  
-      if (!tokenSplit) {
-        return sendErrorResponse(res, 403, "Invalid token format");
-      }
-  
-      const result = validateToken(tokenSplit);
-  
-      if (result) {
-        req.user = result as UserAttributes;
-        next();
-      } else {
-        return sendErrorResponse(res, 403, "Invalid token");
-      }
-    } catch (error) {
-      return sendErrorResponse(res, 400, "Invalid token");
+    req: Request
+  ): Promise<{ user: UserAttributes } | { error: string } | Response> {
+    const token: string | undefined = req.headers["authorization"];
+    if (!token) {
+      return { error: `${Errors.TokenNotExist}` };
     }
+
+    const tokenSplit = token.split(" ")[1];
+    if (!tokenSplit) {
+      return { error: `${Errors.TokenFormat}` };
+    }
+
+    const user = validateToken(tokenSplit);
+    if (!user) {
+      return { error: `${Errors.InvalidToken}` };
+    }
+
+    return { user: user as UserAttributes };
   }
-  
+
   /**
    * Middleware to restrict access based on user role.
    *
@@ -60,12 +53,15 @@ class AuthMiddleware {
   restrictTo(role: string) {
     return function (req: Request, res: Response, next: NextFunction) {
       if (!req.user) {
-        return successResponse(res, 403, "Not Authorized to access");
+        return res.status(403).json({ Error: "Not Authorized to access" });
       }
-      if (role.includes(req.user.role)) {
+      if (role === "customer" && req.user.role === "customer") {
+        next();
+      } else if (role === "admin" && req.user.role === "admin") {
+        next();
+      } else {
         return res.status(403).json({ Error: "Unauthorized to access" });
       }
-      next();
     };
   }
 }

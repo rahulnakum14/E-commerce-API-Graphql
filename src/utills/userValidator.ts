@@ -3,7 +3,7 @@ import UserModel from "../models/userModel";
 
 // UserType
 import UserAttributes from "../types/userType";
-import { UserMessage } from "./constants";
+import { Errors, UserMessage } from "./constants";
 
 // Logger
 import logger from "./logger";
@@ -20,17 +20,18 @@ const validateUser = (
   password: string,
   email?: string
 ): boolean => {
+  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
   if (!username || !password) {
     logger.error(UserMessage.Validation);
     return false;
   }
-  if (email !== undefined && !email) {
-    logger.error(UserMessage.Validation);
+  if (email !== undefined && (!email || !emailRegex.test(email))) {
+    logger.error(Errors.EmailError);
     return false;
   }
   return true;
 };
-
 
 /**
  * Finds a user in the database by their username or email.
