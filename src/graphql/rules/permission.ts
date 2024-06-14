@@ -16,7 +16,7 @@ const permissions = shield(
   {
     Query: {
       getUsers: and(isAuthenticated, isAdmin),
-      getProducts: and(isAuthenticated, or(isAdmin, isCustomer)), // Allow both admins and customers to get products
+      getProducts: and(isAuthenticated, or(isAdmin, isCustomer)), 
       getCartDetails: and(isAuthenticated, isCustomer)
     },
     Mutation: {
