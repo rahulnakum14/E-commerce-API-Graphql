@@ -15,11 +15,8 @@ interface CartAttributes extends Document {
     quantity: number;
     price: number;
   }[];
-  cart_user: mongoose.Types.ObjectId;
+  cart_user: string;
   total_price: number;
-  createdAt: Date;
-  updatedAt: Date;
-  __v: number;
 }
 
 export default CartAttributes;

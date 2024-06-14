@@ -24,13 +24,8 @@ const productResolvers = {
       context: any, //UserContext
       info: GraphQLResolveInfo
     ) => {
-      console.log('this is the context',context);
       
-      if (!context.user) {
-        console.log('this is context user',context.user);
-        
-        throw new ApolloError(Errors.authenticated);
-      }
+      console.log('this is the context',context);
       return await productServices.getAllProducts();
     },
   },
