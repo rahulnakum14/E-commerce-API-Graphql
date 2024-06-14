@@ -27,28 +27,56 @@ class CartServices {
         throw new ProductError("Product Does not Exists.");
       }
 
-      const newCart = new CartModel({
-        products: [
-          {
+      const cart_details = await CartModel.findOne({ cart_user: userID });
+
+      if (!cart_details) {
+        const newCart = new CartModel({
+          products: [
+            {
+              product_id: product_exist.id,
+              quantity: quantity,
+              price: Number(product_exist.product_price) * Number(quantity),
+            },
+          ],
+          cart_user: userID,
+          total_price: Number(product_exist.product_price) * Number(quantity),
+        });
+
+        await newCart.save();
+
+        console.log(JSON.parse(JSON.stringify(newCart, null)));
+
+        return {
+          success: true,
+          message: CartMessages.ProductAdded,
+          data: newCart,
+        };
+      } else {
+        const productIndex = cart_details.products.findIndex(
+          (product) =>
+            product.product_id.toString() === product_exist.id.toString()
+        );
+        if (productIndex > -1) {
+          cart_details.products[productIndex].quantity += Number(quantity);
+          cart_details.products[productIndex].price +=
+            Number(product_exist.product_price) * Number(quantity);
+          cart_details.total_price +=
+            Number(product_exist.product_price) * Number(quantity);
+        }else {
+          cart_details.products.push({
             product_id: product_exist.id,
-            quantity: quantity,
+            quantity: Number(quantity),
             price: Number(product_exist.product_price) * Number(quantity),
-          },
-        ],
-        cart_user: userID,
-        total_price: Number(product_exist.product_price) * Number(quantity),
-      });
-
-      await newCart.save();
-
-      console.log(JSON.parse(JSON.stringify(newCart, null)));
-
+          });
+          cart_details.total_price += Number(product_exist.product_price) * Number(quantity);
+        }
+      }
+      await cart_details.save();
       return {
         success: true,
         message: CartMessages.ProductAdded,
-        data: newCart,
+        data: cart_details,
       };
-      
     } catch (error) {
       throw new Error("Something went wrong while adding product to cart.");
     }
