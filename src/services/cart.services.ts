@@ -5,9 +5,7 @@ import { CartMessages } from "../utills/constants";
 import { CartError, ProductError } from "../utills/custom_error";
 
 class CartServices {
-  async getCartDetails(
-    userID: string
-  ): Promise<CartAttributes[] | null | string> {
+  async getCartDetails(userID: string): Promise<CartAttributes[]> {
     try {
       const result = await CartModel.find({ cart_user: userID }).populate(
         "products"
@@ -19,7 +17,15 @@ class CartServices {
     }
   }
 
-  async addProductCart(userID: string, product_id: string, quantity: string) {
+  async addProductCart(
+    userID: string,
+    product_id: string,
+    quantity: string
+  ): Promise<{
+    success: boolean;
+    message: string;
+    data?: CartAttributes;
+  }> {
     try {
       const product_exist = await ProductModel.findOne({ _id: product_id });
 
@@ -83,7 +89,14 @@ class CartServices {
     }
   }
 
-  async removeProductCart(userID: string, product_id: string) {
+  async removeProductCart(
+    userID: string,
+    product_id: string
+  ): Promise<{
+    success: boolean;
+    message: string;
+    data?: CartAttributes;
+  }> {
     try {
       const cartExist = await CartModel.findOne({ cart_user: userID });
 
@@ -108,9 +121,6 @@ class CartServices {
         if (cartExist.products.length === 0) {
           cartExist.total_price = 0;
         }
-
-        console.log('this is before saving the removed product');
-        
 
         await cartExist.save();
         return {
