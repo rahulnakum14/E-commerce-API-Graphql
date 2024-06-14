@@ -1,0 +1,16 @@
+type Query{
+    getCartDetails:[Cart!]!
+}
+
+type Mutation {
+  "Add product to cart"
+  addProductCart(
+    product_id: String!
+    quantity: String!
+  ): CartResponse!
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}
