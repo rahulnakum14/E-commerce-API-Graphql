@@ -63,5 +63,6 @@ export const Errors = {
   DeleteProductError: "Internal Server Error while Deleting the product",
   GetAllProductsError: "Internal Server Error while fetching uproducts.",
   CreateProductError: "Internal Server Error while creating products.",
+  CartDetailsError: "Internal Server Error while fetching CartDetails.",
   GenericError:"Internal Server Error While running an applo server."
 };

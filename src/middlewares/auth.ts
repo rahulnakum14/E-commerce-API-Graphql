@@ -23,26 +23,26 @@ import { Errors } from "../utills/constants";
  * @throws {Error} If there's an issue validating the token or if the token is invalid.
  */
 class AuthMiddleware {
-async authenticateToken(req: Request): Promise< {user:UserAttributes}  | { error: string } | Response>
-{
-  const token: string | undefined = req.headers["authorization"];
-  if (!token) {
-    return { error: `${Errors.TokenNotExist}` };
+  async authenticateToken(
+    req: Request
+  ): Promise<{ user: UserAttributes } | { error: string } | Response> {
+    const token: string | undefined = req.headers["authorization"];
+    if (!token) {
+      return { error: `${Errors.TokenNotExist}` };
+    }
+
+    const tokenSplit = token.split(" ")[1];
+    if (!tokenSplit) {
+      return { error: `${Errors.TokenFormat}` };
+    }
+
+    const user = validateToken(tokenSplit);
+    if (!user) {
+      return { error: `${Errors.InvalidToken}` };
+    }
+
+    return { user: user as UserAttributes };
   }
-
-  const tokenSplit = token.split(" ")[1];
-  if (!tokenSplit) {
-    return { error: `${Errors.TokenFormat}` };
-  }
-
-  const user = validateToken(tokenSplit);
-  if (!user) {
-    return { error: `${Errors.InvalidToken}` };
-  }
-
-  return {user:user as UserAttributes};
-}
-
 
   /**
    * Middleware to restrict access based on user role.
@@ -56,11 +56,11 @@ async authenticateToken(req: Request): Promise< {user:UserAttributes}  | { error
         return res.status(403).json({ Error: "Not Authorized to access" });
       }
       if (role === "customer" && req.user.role === "customer") {
-        next(); 
+        next();
       } else if (role === "admin" && req.user.role === "admin") {
-        next(); 
+        next();
       } else {
-        return res.status(403).json({ Error: "Unauthorized to access" }); 
+        return res.status(403).json({ Error: "Unauthorized to access" });
       }
     };
   }
