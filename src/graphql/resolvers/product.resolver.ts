@@ -2,46 +2,43 @@ import { ApolloError, UserInputError } from "apollo-server-errors";
 import { CustomError } from "../../utills/custom_error";
 import productServices from "../../services/product.services";
 import logger from "../../utills/logger";
-import { Errors } from "../../utills/constants";
-import { GraphQLResolveInfo } from 'graphql';
+import { Errors, ProductMessage } from "../../utills/constants";
+import { GraphQLResolveInfo } from "graphql";
 
 /** UserContext.ts */
 // import { BaseContext } from "@apollo/server";
 // import UserAttributes from "../types/userType";
 
 // interface UserContext extends BaseContext {
-//   user: UserAttributes; 
+//   user: UserAttributes;
 // }
 
 // export default UserContext;
 
-
 const productResolvers = {
   Query: {
-    getProducts: async ( 
-      parent: any, 
+    getProducts: async (
+      parent: any,
       args: Record<string, any>,
-      context: any, //UserContext
+      context: any,
       info: GraphQLResolveInfo
     ) => {
-      
-      console.log('this is the context',context);
-      return await productServices.getAllProducts();
+      try {
+        return await productServices.getAllProducts();
+      } catch (error) {
+        throw new ApolloError(Errors.GetAllProductsError);
+      }
     },
   },
 
   Mutation: {
     async createProduct(
       _: any,
-      args: Record<'product_name' | 'product_price', string>,
-      context: any, //UserContext
+      args: Record<"product_name" | "product_price", string>,
+      context: any,
       info: GraphQLResolveInfo
     ) {
       try {
-        // if(AuthMiddleware.restrictTo(context.user.role)){
-        //   console.log('allowed to access', context.user.role);
-        //   return;
-        // }
         const result = await productServices.createProduct(
           args.product_name,
           args.product_price
@@ -61,6 +58,7 @@ const productResolvers = {
             throw new UserInputError(error.message);
           }
         }
+        logger.fatal(Errors.CreateProductError);
         throw new ApolloError(Errors.GenericError);
       }
     },
@@ -78,13 +76,13 @@ const productResolvers = {
         if (!upatedProduct) {
           return {
             success: false,
-            message: "Product not found",
+            message: ProductMessage.NotFound,
             data: null,
           };
         }
         return {
           success: true,
-          message: "Product updated successfully",
+          message: ProductMessage.UpdateSuccess,
           data: upatedProduct,
         };
       } catch (error) {
@@ -99,13 +97,13 @@ const productResolvers = {
         if (!deleteProduct) {
           return {
             success: false,
-            message: "Product not found",
+            message: ProductMessage.NotFound,
             data: null,
           };
         }
         return {
           success: true,
-          message: "Product deleted successfully",
+          message: ProductMessage.DeleteSuccess,
           data: deleteProduct,
         };
       } catch (error) {

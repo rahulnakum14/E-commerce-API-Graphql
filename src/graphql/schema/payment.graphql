@@ -1,4 +1,5 @@
 type Query {
+<<<<<<< HEAD
   "Get Payment Url"
   getPaymentUrl: PaymentUrlResponse
 
@@ -6,6 +7,10 @@ type Query {
   orderSuccess: PaymentSuccessResponse
 
   "Place Order Url"
+=======
+  getPaymentUrl: PaymentUrlResponse
+  orderSuccess: PaymentSuccessResponse
+>>>>>>> 03a4773 (Implemented the Payment Functionally - Completed)
   placedOrder: PaymentSuccessResponse
 }
 

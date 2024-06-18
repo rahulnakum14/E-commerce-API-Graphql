@@ -41,3 +41,8 @@ export class VerificationEmailError extends CustomError {
     super(message, "EMAIL_VERIFICATION_FAILED");
   }
 }
+export class StripeKeyError extends CustomError {
+  constructor(message: string) {
+    super(message, "STRIPE_KEY_NOT_FOUND");
+  }
+}
