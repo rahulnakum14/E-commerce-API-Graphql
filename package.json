@@ -20,6 +20,7 @@
     "@types/express": "^4.17.8",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/nodemailer": "^6.4.15",
+    "@types/pdfkit": "^0.13.4",
     "apollo-server-express": "^3.13.0",
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6",
@@ -34,6 +35,8 @@
     "graphql-shield": "^7.6.5",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.4.1",
-    "nodemailer": "^6.9.13"
+    "nodemailer": "^6.9.13",
+    "pdfkit": "^0.15.0",
+    "stripe": "^15.12.0"
   }
 }

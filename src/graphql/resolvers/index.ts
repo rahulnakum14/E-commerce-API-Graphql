@@ -2,8 +2,9 @@ import { mergeResolvers } from '@graphql-tools/merge';
 import userResolvers from './user.resolver';
 import productResolvers from './product.resolver';
 import cartResolvers from './cart.resolver';
+import paymentResolvers from './payment.resolver';
 
-const resolvers = mergeResolvers([userResolvers, productResolvers,cartResolvers]);
+const resolvers = mergeResolvers([userResolvers, productResolvers,cartResolvers,paymentResolvers]);
 
 export default resolvers;
 
