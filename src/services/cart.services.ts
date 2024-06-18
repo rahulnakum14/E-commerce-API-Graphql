@@ -50,8 +50,6 @@ class CartServices {
 
         await newCart.save();
 
-        console.log(JSON.parse(JSON.stringify(newCart, null)));
-
         return {
           success: true,
           message: CartMessages.ProductAdded,
