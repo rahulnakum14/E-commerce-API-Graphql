@@ -1,17 +1,14 @@
-type Query{
-    getCartDetails:[Cart!]!
+type Query {
+  "Get Cart Details"
+  getCartDetails: [Cart!]!
 }
 
 type Mutation {
   "Add product to cart"
-  addProductCart(
-    product_id: String!
-    quantity: String!
-  ): CartResponse!
-  
-  removeProductCart(
-    product_id: String!
-  ): CartResponse!
+  addProductCart(product_id: String!, quantity: String!): CartResponse!
+
+  "Remove Product to cart"
+  removeProductCart(product_id: String!): CartResponse!
 }
 
 schema {
