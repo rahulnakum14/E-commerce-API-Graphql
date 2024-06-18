@@ -22,5 +22,3 @@ schema {
   query: Query
   mutation: Mutation
 }
-
-# parent,args,context,info

@@ -1,5 +1,6 @@
-type Query{
-    getCartDetails:[Cart!]!
+type Query {
+  "Get Cart Details"
+  getCartDetails: [Cart!]!
 }
 
 type Mutation {
@@ -7,6 +8,10 @@ type Mutation {
   addProductCart(
     product_id: String!
     quantity: String!
+  ): CartResponse!
+  
+  removeProductCart(
+    product_id: String!
   ): CartResponse!
 }
 
