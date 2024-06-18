@@ -4,8 +4,12 @@ type Query {
 }
 
 type Mutation {
-  "Add user"
-  registerUser(username: String!, email: String!, password: String!): UserResponse!
+  "Register User"
+  registerUser(
+    username: String!
+    email: String!
+    password: String!
+  ): UserResponse!
 
   "Login User"
   loginUser(username: String!, password: String!): UserLoginData!

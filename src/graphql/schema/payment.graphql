@@ -1,0 +1,14 @@
+type Query {
+  "Get Payment Url"
+  getPaymentUrl: PaymentUrlResponse
+
+  "Order Success Url"
+  orderSuccess: PaymentSuccessResponse
+
+  "Place Order Url"
+  placedOrder: PaymentSuccessResponse
+}
+
+schema {
+  query: Query
+}
