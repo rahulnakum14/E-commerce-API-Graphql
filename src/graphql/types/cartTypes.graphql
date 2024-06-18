@@ -1,5 +1,5 @@
 type ProductInCart {
-  id: ID!
+  product_id: String
   quantity: String!
   price: String
 }

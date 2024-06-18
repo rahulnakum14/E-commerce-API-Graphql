@@ -1,7 +1,8 @@
 import { GraphQLResolveInfo } from "graphql";
 import cartServices from "../../services/cart.services";
-import { ApolloError } from "apollo-server-errors";
+import { ApolloError, UserInputError } from "apollo-server-errors";
 import { CartMessages, Errors } from "../../utills/constants";
+import { CustomError } from "../../utills/custom_error";
 
 const cartResolvers = {
   Query: {
@@ -11,10 +12,12 @@ const cartResolvers = {
       context: any,
       info: GraphQLResolveInfo
     ) => {
-      console.log("User ID from context:", context.user.id);
-      const cartDetails = await cartServices.getCartDetails(context.user.id);
-      console.log("this is resolvers", cartDetails);
-      return cartDetails;
+      try {
+        const cartDetails = await cartServices.getCartDetails(context.user.id);
+        return cartDetails;
+      } catch (error) {
+        throw new ApolloError(Errors.GetCartDetails);
+      }
     },
   },
 
@@ -41,21 +44,25 @@ const cartResolvers = {
           throw new ApolloError(Errors.CreateProductError);
         }
       } catch (error) {
-        console.log(error);
-        throw new Error("Error Form Resolver while adding product to cart.");
+        if (error instanceof CustomError) {
+          if (error.code === "PRODUCT") {
+            throw new UserInputError(error.message);
+          }
+        }
+        throw new Error(CartMessages.AddToCartError);
       }
     },
 
     async removeProductCart(
       _: any,
-      args: Record<"user.id" | "product_id" , string>,
+      args: Record<"user.id" | "product_id", string>,
       context: any,
       info: GraphQLResolveInfo
     ) {
       try {
         const productremoved = await cartServices.removeProductCart(
           context.user.id,
-          args.product_id,
+          args.product_id
         );
         if (productremoved.success) {
           return {
@@ -67,8 +74,12 @@ const cartResolvers = {
           throw new ApolloError(CartMessages.RemoveFromCartError);
         }
       } catch (error) {
-        console.log(error);
-        throw new Error("Error Form Resolver while removing product to cart.");
+        if (error instanceof CustomError) {
+          if (error.code === "CART") {
+            throw new UserInputError(error.message);
+          }
+        }
+        throw new Error(CartMessages.AddToCartError);
       }
     },
   },

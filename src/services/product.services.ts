@@ -1,16 +1,11 @@
-import { Errors, ProductMessage } from "../utills/constants";
+import { ProductMessage } from "../utills/constants";
 import ProductModel from "../models/productModel";
 import ProductAttributes from "../types/productType";
 import { ValidationError } from "../utills/custom_error";
-import { ApolloError } from "apollo-server-errors";
 
 class ProductService {
   async getAllProducts(): Promise<ProductAttributes[]> {
-    try {
       return await ProductModel.find({});
-    } catch (error) {
-      throw new ApolloError(Errors.GetAllProductsError);
-    }
   }
 
   async createProduct(
@@ -24,7 +19,6 @@ class ProductService {
     if (!product_name || !product_price) {
       throw new ValidationError(ProductMessage.Validation);
     }
-
     const newProduct = new ProductModel({
       product_name: product_name,
       product_price: product_price,

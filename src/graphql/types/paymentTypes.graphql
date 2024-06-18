@@ -1,0 +1,14 @@
+type PaymentUrl {
+    PaymentUrl: String
+}
+
+type PaymentUrlResponse {
+    message: String
+    PaymentUrl: String
+    SessionId: ID!
+    InvoiceId: ID!
+}
+
+type PaymentSuccessResponse {
+  message: String!
+}
