@@ -1,16 +1,12 @@
 // Defaults
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 
 // JWT Token Validator
 import { validateToken } from "../helper/jwt";
 
-// Response Types
-import { sendErrorResponse, successResponse } from "../utills/responseHandler";
-
 // UserAttributes
 import UserAttributes from "../types/userType";
 
-import { ApolloError } from "apollo-server-errors";
 import { Errors } from "../utills/constants";
 
 /**
@@ -42,27 +38,6 @@ class AuthMiddleware {
     }
 
     return { user: user as UserAttributes };
-  }
-
-  /**
-   * Middleware to restrict access based on user role.
-   *
-   * @param {string} role - The role to restrict access to.
-   * @returns {Function} Middleware function to handle the role-based access control.
-   */
-  restrictTo(role: string) {
-    return function (req: Request, res: Response, next: NextFunction) {
-      if (!req.user) {
-        return res.status(403).json({ Error: "Not Authorized to access" });
-      }
-      if (role === "customer" && req.user.role === "customer") {
-        next();
-      } else if (role === "admin" && req.user.role === "admin") {
-        next();
-      } else {
-        return res.status(403).json({ Error: "Unauthorized to access" });
-      }
-    };
   }
 }
 
