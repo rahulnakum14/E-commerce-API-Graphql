@@ -1,9 +1,13 @@
+// Defaults 
+import { GraphQLResolveInfo } from "graphql";
 import { ApolloError, UserInputError } from "apollo-server-errors";
+
+// Other Configs
 import { CustomError } from "../../utills/custom_error";
 import productServices from "../../services/product.services";
 import logger from "../../utills/logger";
 import { Errors, ProductMessage } from "../../utills/constants";
-import { GraphQLResolveInfo } from "graphql";
+
 
 /** UserContext.ts */
 // import { BaseContext } from "@apollo/server";
@@ -16,7 +20,22 @@ import { GraphQLResolveInfo } from "graphql";
 // export default UserContext;
 
 const productResolvers = {
+  /**
+   * Represents the Query type in the GraphQL schema.
+   *
+   * @typedef {Object} Query
+   */
   Query: {
+    /**
+     * Fetches all products in the system.
+     *
+     * @param {Object} parent - Parent object in the GraphQL resolution chain (often unused).
+     * @param {Object} args - Arguments for filtering or sorting products (optional).
+     * @param {Object} context - Context object containing authentication and other data.
+     * @param {GraphQLResolveInfo} info - Information about the current GraphQL resolution.
+     * @returns {Promise<Product[]>} Promise that resolves to an array of Product objects.
+     * @throws {ApolloError} - Thrown for errors during product retrieval.
+     */
     getProducts: async (
       parent: any,
       args: Record<string, any>,
@@ -31,7 +50,25 @@ const productResolvers = {
     },
   },
 
+  /**
+   * Represents the Mutation type in the GraphQL schema.
+   *
+   * @typedef {Object} Mutation
+   */
   Mutation: {
+    /**
+     * Creates a new product in the system.
+     *
+     * @param {Object} parent - Parent object in the GraphQL resolution chain (often unused).
+     * @param {Object} args - Arguments for creating a product.
+     * @param {string} args.product_name - The name of the product (required).
+     * @param {string} args.product_price - The price of the product (required).
+     * @param {Object} context - Context object containing authentication and other data.
+     * @param {GraphQLResolveInfo} info - Information about the current GraphQL resolution.
+     * @returns {Promise<ProductResponse>} Promise that resolves to a response object indicating success or failure.
+     * @throws {UserInputError} - Thrown for validation errors or product-related issues.
+     * @throws {ApolloError} - Thrown for other unexpected errors during product creation.
+     */
     async createProduct(
       _: any,
       args: Record<"product_name" | "product_price", string>,
@@ -63,6 +100,19 @@ const productResolvers = {
       }
     },
 
+    /**
+     * Updates an existing product in the system.
+     *
+     * @param {Object} parent - Parent object in the GraphQL resolution chain (often unused).
+     * @param {Object} args - Arguments for updating a product.
+     * @param {string} args.id - The ID of the product to update (required).
+     * @param {string} args.product_name - The updated name of the product.
+     * @param {string} args.product_price - The updated price of the product.
+     * @param {Object} context - Context object containing authentication and other data.
+     * @param {GraphQLResolveInfo} info - Information about the current GraphQL resolution.
+     * @returns {Promise<ProductResponse>} Promise that resolves to a response object indicating success or failure and updated product data (if successful).
+     * @throws {ApolloError} - Thrown for errors during product update, including "not found" errors.
+     */
     async updateProduct(
       _: any,
       args: { id: string; product_name: string; product_price: string }
@@ -91,6 +141,17 @@ const productResolvers = {
       }
     },
 
+    /**
+     * Deletes an existing product from the system.
+     *
+     * @param {Object} parent - Parent object in the GraphQL resolution chain (often unused).
+     * @param {Object} args - Arguments for deleting a product.
+     * @param {string} args.id - The ID of the product to delete (required).
+     * @param {Object} context - Context object containing authentication and other data.
+     * @param {GraphQLResolveInfo} info - Information about the current GraphQL resolution.
+     * @returns {Promise<ProductResponse>} Promise that resolves to a response object indicating success or failure and deleted product data (if successful).
+     * @throws {ApolloError} - Thrown for errors during product deletion, including "not found" errors.
+     */
     async deleteProduct(_: any, args: { id: string }) {
       try {
         const deleteProduct = await productServices.deleteProduct(args.id);
