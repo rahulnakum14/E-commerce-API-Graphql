@@ -3,7 +3,7 @@ type Query {
   getPaymentUrl: PaymentUrlResponse
 
   "Get OrderSuccess Url"
-  orderSuccess: PaymentuccessResponse
+  orderSuccess: PaymentSuccessResponse
 
   "Get PlaceOrder Url"
   placedOrder: PaymentSuccessResponse
