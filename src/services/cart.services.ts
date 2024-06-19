@@ -15,7 +15,12 @@ import { isValidObjectId } from "mongoose";
 
 class CartServices {
   async getCartDetails(userID: string): Promise<CartAttributes[]> {
-    return await CartModel.find({ cart_user: userID }).populate("products");
+    const cartDetails = await CartModel.find({ cart_user: userID }).populate({
+      path: 'cart_user',
+      model: 'userModel',
+    }).populate('products');
+
+    return cartDetails;
   }
 
   async addProductCart(
@@ -36,7 +41,11 @@ class CartServices {
       throw new ProductError(ProductMessage.NotFound);
     }
 
-    const cart_details = await CartModel.findOne({ cart_user: userID });
+    // const cart_details = await CartModel.findOne({ cart_user: userID });
+    const cart_details = await CartModel.findOne({ cart_user: userID }).populate({
+      path: 'cart_user',
+      model: 'userModel',
+    }).populate('products');
 
     if (!cart_details) {
       const newCart = new CartModel({
@@ -95,7 +104,10 @@ class CartServices {
     message: string;
     data?: CartAttributes;
   }> {
-    const cartExist = await CartModel.findOne({ cart_user: userID });
+    const cartExist = await CartModel.findOne({ cart_user: userID }).populate({
+      path: 'cart_user',
+      model: 'userModel',
+    }).populate('products');
 
     if (!cartExist) {
       throw new CartError(PaymentMessage.CartNotFound);
