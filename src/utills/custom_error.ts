@@ -1,4 +1,4 @@
-// errors.ts
+// Custom Error Handler
 export class CustomError extends Error {
   public code: string;
 

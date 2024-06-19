@@ -1,12 +1,15 @@
-// src/services/user.service.ts
-
-import UserModel from "../models/userModel";
-import UserAttributes from "../types/userType";
-import { UserMessage } from "../utills/constants";
-import logger from "../utills/logger";
-import { findUser, validateUser } from "../utills/userValidator";
+// Defaults 
 import bcrypt from "bcrypt";
 import { randomBytes } from "crypto";
+
+// Models,Types And Logger
+import UserModel from "../models/userModel";
+import UserAttributes from "../types/userType";
+import logger from "../utills/logger";
+
+//Other Required Imports
+import { findUser, validateUser } from "../utills/userValidator";
+import { UserMessage } from "../utills/constants";
 import { sendEmail } from "../helper/mailServices";
 import { generateToken } from "../helper/jwt";
 import {

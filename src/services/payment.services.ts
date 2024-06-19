@@ -1,14 +1,21 @@
-import { ApolloError } from "apollo-server-errors";
-import { PaymentMessage, ProductMessage } from "../utills/constants";
+//Defaults
 import Stripe from "stripe";
 import fs from "fs";
 import path from "path";
+import PDFDocument from "pdfkit";
+import { ObjectId } from "mongodb";
+
+// Constants
+import { PaymentMessage, ProductMessage } from "../utills/constants";
+
+// Models
 import CartModel from "../models/cartModel";
 import ProductModel from "../models/productModel";
 import UserModel from "../models/userModel";
-import PDFDocument from "pdfkit";
+
 import { sendEmail } from "../helper/mailServices";
-import { ObjectId } from "mongodb";
+
+//Error Handlers
 import {
   CartError,
   ProductError,
@@ -18,6 +25,22 @@ import {
 } from "../utills/custom_error";
 
 class PaymentServices {
+  /**
+   * Creates a Stripe checkout session and returns the payment URL for the user's cart.
+   *
+   * @async
+   * @param {string} userID - The ID of the user for whom the payment URL is generated.
+   * @returns {Promise<{ message: string; PaymentUrl: string; SessionId: string; InvoiceId: string }>}
+   *          A promise that resolves to an object with the following properties:
+   *          - `message`: A message indicating the outcome.
+   *          - `PaymentUrl`: The URL to redirect the user to for payment.
+   *          - `SessionId`: The ID of the Stripe Checkout session.
+   *          - `InvoiceId`: The ID of the Stripe invoice created for the payment.
+   * @throws {StripeKeyError} - Thrown if the STRIPE_SECRET_KEY environment variable is not set.
+   * @throws {CartError} - Thrown if the user's cart is not found or is empty.
+   * @throws {ProductError} - Thrown if a product in the cart is not found.
+   * @throws {UserExistsError} - Thrown if the user with the given ID is not found.
+   */
   async getPaymentUrl(userID: string): Promise<{
     message: string;
     PaymentUrl: string;
@@ -109,6 +132,16 @@ class PaymentServices {
     };
   }
 
+  /**
+   * Processes a successful order and sends an invoice to the user's email.
+   *
+   * @async
+   * @param {string} userID - The ID of the user who placed the order.
+   * @returns {Promise<string>} A promise that resolves to a success message
+   *                             indicating the invoice was sent, or rejects with an error.
+   * @throws {ValidationError} - Thrown if the user or their cart is not found.
+   * @throws {Error} - Thrown if there's an error creating the invoice PDF or sending the email.
+   */
   async orderSuccess(userID: string): Promise<string> {
     const user = await UserModel.findById(userID);
     const cart = await CartModel.findOne({ cart_user: userID }).populate(
@@ -226,6 +259,11 @@ class PaymentServices {
     });
   }
 
+  /**
+   * Returns a success message indicating a successful order.
+   *
+   * @returns {Promise<String>} A promise that resolves to a string message indicating order success.
+   */
   async placedOrder(): Promise<String> {
     return PaymentMessage.OrderSuccess;
   }

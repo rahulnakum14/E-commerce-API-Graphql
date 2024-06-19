@@ -50,6 +50,8 @@ export const CartMessages = {
   ProductAdded: "Product added to cart successfully.",
 };
 
+/** Constant Of the Erros */
+
 export const Errors = {
   EmailError: "Enter a valid email.",
   TokenNotExist: "Unauthorized or Token does not exist",

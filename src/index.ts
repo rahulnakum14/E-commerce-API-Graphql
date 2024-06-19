@@ -1,24 +1,35 @@
+// Defaults
 import express from "express";
+import dotenv from "dotenv";
+import http from "http";
+import cors from "cors";
+
+//Graphql Imports
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import resolvers from "./graphql/resolvers";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
-import typeDefs from "./graphql/schema";
-import { connectDb } from "./config/db";
-import dotenv from "dotenv";
-import http from "http";
-import cors from "cors";
-import AuthMiddleware from "./middlewares/auth";
-import { ApolloError } from "apollo-server-errors";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { applyMiddleware } from "graphql-middleware";
+
+// Graphql Config Imports
+import typeDefs from "./graphql/schema";
+import { connectDb } from "./config/db";
+import AuthMiddleware from "./middlewares/auth";
 import permissions from "./graphql/rules/permission";
 
 dotenv.config();
 
+// Creates the Express application instance.
 const app = express();
+
+// Creates the HTTP server instance
 const httpServer = http.createServer(app);
 
+/**
+ * Starts the Apollo Server asynchronously.
+ * This function also connects to the database and configures middleware.
+ */
 const startServer = async () => {
   // Create an executable schema
   const schema = makeExecutableSchema({ typeDefs, resolvers });
@@ -51,6 +62,7 @@ const startServer = async () => {
   });
 };
 
+// Start the server and catch any errors
 startServer().catch((error) => {
   console.error("Failed to start server:", error);
 });
