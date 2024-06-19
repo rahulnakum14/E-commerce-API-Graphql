@@ -6,7 +6,12 @@ import {
   PaymentMessage,
   ProductMessage,
 } from "../utills/constants";
-import { CartError, ProductError } from "../utills/custom_error";
+import {
+  CartError,
+  ProductError,
+  ValidationError,
+} from "../utills/custom_error";
+import { isValidObjectId } from "mongoose";
 
 class CartServices {
   async getCartDetails(userID: string): Promise<CartAttributes[]> {
@@ -22,6 +27,9 @@ class CartServices {
     message: string;
     data?: CartAttributes;
   }> {
+    if (!isValidObjectId(product_id)) {
+      throw new ValidationError(ProductMessage.InvalidIdFormat);
+    }
     const product_exist = await ProductModel.findOne({ _id: product_id });
 
     if (!product_exist) {
@@ -87,46 +95,46 @@ class CartServices {
     message: string;
     data?: CartAttributes;
   }> {
-    try {
-      const cartExist = await CartModel.findOne({ cart_user: userID });
+    const cartExist = await CartModel.findOne({ cart_user: userID });
 
-      if (!cartExist) {
-        throw new CartError(PaymentMessage.CartNotFound);
+    if (!cartExist) {
+      throw new CartError(PaymentMessage.CartNotFound);
+    }
+
+    if (!isValidObjectId(product_id)) {
+      throw new ValidationError(ProductMessage.InvalidIdFormat);
+    }
+    
+    const productExist = await ProductModel.findById(product_id);
+
+    if (!productExist) {
+      throw new CartError(CartMessages.ProductNotInCart);
+    }
+
+    const productIndex = cartExist.products.findIndex(
+      (product) => product.product_id.toString() === product_id
+    );
+    if (productIndex > -1) {
+      const product = cartExist.products[productIndex];
+      cartExist.total_price -= product.price;
+      cartExist.products.splice(productIndex, 1);
+
+      if (cartExist.products.length === 0) {
+        cartExist.total_price = 0;
       }
 
-      const productExist = await ProductModel.findById(product_id);
-
-      if (!productExist) {
-        throw new CartError(CartMessages.ProductNotInCart);
-      }
-
-      const productIndex = cartExist.products.findIndex(
-        (product) => product.product_id.toString() === product_id
-      );
-      if (productIndex > -1) {
-        const product = cartExist.products[productIndex];
-        cartExist.total_price -= product.price;
-        cartExist.products.splice(productIndex, 1);
-
-        if (cartExist.products.length === 0) {
-          cartExist.total_price = 0;
-        }
-
-        await cartExist.save();
-        return {
-          success: true,
-          message: CartMessages.ProductRemoved,
-          data: cartExist,
-        };
-      } else {
-        return {
-          success: false,
-          message: CartMessages.ProductNotInCart,
-          data: cartExist,
-        };
-      }
-    } catch (error) {
-      throw new Error(CartMessages.RemoveFromCartError);
+      await cartExist.save();
+      return {
+        success: true,
+        message: CartMessages.ProductRemoved,
+        data: cartExist,
+      };
+    } else {
+      return {
+        success: false,
+        message: CartMessages.ProductNotInCart,
+        data: cartExist,
+      };
     }
   }
 }
