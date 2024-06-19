@@ -1,6 +1,10 @@
 type Query {
   getPaymentUrl: PaymentUrlResponse
-  orderSuccess: PaymentSuccessResponse
+
+  "Get OrderSuccess Url"
+  orderSuccess: PaymentuccessResponse
+
+  "Get PlaceOrder Url"
   placedOrder: PaymentSuccessResponse
 }
 

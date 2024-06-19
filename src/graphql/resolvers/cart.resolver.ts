@@ -45,7 +45,7 @@ const cartResolvers = {
         }
       } catch (error) {
         if (error instanceof CustomError) {
-          if (error.code === "PRODUCT") {
+          if (error.code === "PRODUCT" || error.code === "VALIDATION_ERROR") {
             throw new UserInputError(error.message);
           }
         }
@@ -75,7 +75,7 @@ const cartResolvers = {
         }
       } catch (error) {
         if (error instanceof CustomError) {
-          if (error.code === "CART") {
+          if (error.code === "CART" || error.code === "VALIDATION_ERROR") {
             throw new UserInputError(error.message);
           }
         }
