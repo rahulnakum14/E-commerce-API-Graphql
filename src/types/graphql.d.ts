@@ -1,6 +1,7 @@
-declare module '*.graphql' {
-    import { DocumentNode } from 'graphql';
-    const Schema: DocumentNode;
-    export = Schema;
-  }
-  
+import { DocumentNode } from "graphql";
+
+// Handles the .graphql Imports in typescript
+declare module "*.graphql" {
+  const Schema: DocumentNode;
+  export = Schema;
+}
