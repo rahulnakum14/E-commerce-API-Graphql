@@ -9,13 +9,13 @@ type Mutation {
 
   "Update Product"
   updateProduct(
-    id: ID!
+    id: String!
     product_name: String
     product_price: String
   ): ProductResponse!
 
   "Delete Product"
-  deleteProduct(id: ID!): ProductResponse!
+  deleteProduct(id: String!): ProductResponse!
 }
 
 schema {

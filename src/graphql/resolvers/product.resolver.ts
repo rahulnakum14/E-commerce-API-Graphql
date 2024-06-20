@@ -119,7 +119,7 @@ const productResolvers = {
     ) {
       try {
         const upatedProduct = await productServices.updateProduct(
-          args.id,
+          args.id.toString(),
           args.product_name,
           args.product_price
         );

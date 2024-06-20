@@ -5,8 +5,14 @@ import ProductModel from "../models/productModel";
 import { ProductMessage } from "../utills/constants";
 import ProductAttributes from "../types/productType";
 import { ValidationError } from "../utills/custom_error";
+import client from '../config/redis';
+import { Types } from "mongoose";
 
 class ProductService {
+
+  // Setting up the cache_expiration
+  static CACHE_EXPIRATION = parseInt(process.env.CACHE_EXPIRATION || '3600', 10); // Cache expiration time in seconds
+
   /**
    * Retrieves all products from the database.
    *
@@ -16,7 +22,28 @@ class ProductService {
    * @throws {MongooseError} - May throw a Mongoose error if there's an issue with the database query.
    */
   async getAllProducts(): Promise<ProductAttributes[]> {
-    return await ProductModel.find({});
+    const cacheKey = 'allProducts';
+
+    // Try to get data from Redis cache
+    const cachedData = await client.get(cacheKey);
+    if (cachedData) {
+      console.log('Data fetched from cache');
+      const products = JSON.parse(cachedData);
+      return products.map((product: any) => ({
+        id: product._id.toString(), // Transform _id to string as needed
+        product_name: product.product_name,
+        product_price: product.product_price,
+      }));
+    }
+
+    console.log('Cache miss. Fetching from database...');
+    // If no cache, fetch from database
+    const products = await ProductModel.find({});
+
+    // Cache the fetched data
+    await client.set(cacheKey, JSON.stringify(products), 'EX', ProductService.CACHE_EXPIRATION);
+    console.log('Data cached');
+    return products;
   }
 
   /**
@@ -43,12 +70,21 @@ class ProductService {
     if (!product_name || !product_price) {
       throw new ValidationError(ProductMessage.Validation);
     }
+
     const newProduct = new ProductModel({
       product_name: product_name,
       product_price: product_price,
     });
 
+    // Save the new product to MongoDB
     await newProduct.save();
+
+    // Update cache after successful creation
+    const cacheKey = `product:${newProduct._id}`;
+    await client.set(cacheKey, JSON.stringify(newProduct), 'EX', ProductService.CACHE_EXPIRATION);
+
+    // Invalidate all products cache
+    await client.del('allProducts');
 
     return {
       success: true,
@@ -74,11 +110,24 @@ class ProductService {
     product_name: string,
     product_price: string
   ): Promise<ProductAttributes | null> {
-    return await ProductModel.findByIdAndUpdate(
-      id,
+    console.log('this is id',id);
+    console.log('this is id',typeof(id));
+
+    const updatedProduct = await ProductModel.findByIdAndUpdate(
+      id.toString(),
       { product_name, product_price },
       { new: true }
     );
+    
+    if (updatedProduct) {
+      console.log('this is updated product called');
+      const cacheKey = `product:${id}`;
+      await client.set(cacheKey, JSON.stringify(updatedProduct), 'EX', ProductService.CACHE_EXPIRATION);
+
+      // Invalidate all products cache
+      await client.del('allProducts');
+    }
+    return updatedProduct;
   }
 
   /**
@@ -92,7 +141,20 @@ class ProductService {
    * @throws {MongooseError} - Thrown if there's an issue with the database operation.
    */
   async deleteProduct(id: string): Promise<ProductAttributes | null> {
-    return await ProductModel.findByIdAndDelete(id);
+    const deletedProduct = await ProductModel.findByIdAndDelete(id);
+
+    if (deletedProduct) {
+      console.log('this is deletedProduct called');
+      const cacheKey = `product:${id}`;
+      await client.del(cacheKey);
+
+      // Invalidate all products cache
+      await client.del('allProducts');
+
+      return deletedProduct;
+    } else {
+      return null; // Product not found or already deleted
+    }
   }
 }
 
