@@ -40,6 +40,16 @@ const startServer = async () => {
   const server = new ApolloServer({
     schema: schemaWithMiddleware,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+
+    // Format the Error to hide sensitive fields....
+    formatError: (error) => {
+      // Here you can customize the error formatting
+      console.error(error); // Log the error for debugging purposes
+
+      // Hide sensitive information if needed
+      const { extensions, locations, path, ...rest } = error;
+      return rest;
+    },
   });
 
   await server.start();

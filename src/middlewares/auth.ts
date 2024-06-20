@@ -7,6 +7,7 @@ import { validateToken } from "../helper/jwt";
 // UserAttributes
 import UserAttributes from "../types/userType";
 
+// Constants
 import { Errors } from "../utills/constants";
 
 /**
