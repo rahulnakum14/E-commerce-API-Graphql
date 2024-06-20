@@ -18,6 +18,7 @@ import {
   InvalidCredentialsError,
   VerificationEmailError,
 } from "../utills/custom_error";
+import { GraphQLError } from 'graphql';
 
 class UserService {
   async getAllUsers(): Promise<UserAttributes[]> {
@@ -86,6 +87,14 @@ class UserService {
   }> {
     // Validate user input
     if (!validateUser(username, password)) {
+      // Handling error using Graphql Error 
+      /** 
+       throw new GraphQLError(UserMessage.Validation, {
+        extensions: {
+          code: 'FORBIDDEN',
+        },
+      }); 
+      */
       throw new ValidationError(UserMessage.Validation);
     }
 

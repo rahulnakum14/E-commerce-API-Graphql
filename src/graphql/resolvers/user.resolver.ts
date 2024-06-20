@@ -121,6 +121,12 @@ const userResolvers = {
           throw new ApolloError("Login failed");
         }
       } catch (error) {
+        // Handle Error Using Graphql Error If thrown by graphql error in user.service
+        /** 
+         if (error instanceof GraphQLError) {
+            throw error; // This will preserve the original UserInputError with the custom message
+          }
+        **/
         if (error instanceof CustomError) {
           if (
             error.code === "VALIDATION_ERROR" ||
