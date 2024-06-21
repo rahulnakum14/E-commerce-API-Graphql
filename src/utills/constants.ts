@@ -62,6 +62,8 @@ export const Errors = {
   GetAllUsers: "Internal Server Error while fetching users.",
   GetCartDetails: "Internal Server Error while fetching cart details.",
   signUpError: "Internal Server Error while Signup",
+
+  loginError: "Internal Server Error while Login",
   UpdateProductError: "Internal Server Error while Updating the product",
   DeleteProductError: "Internal Server Error while Deleting the product",
   GetAllProductsError: "Internal Server Error while fetching uproducts.",

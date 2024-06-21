@@ -2,7 +2,7 @@
 import ProductModel from "../models/productModel";
 
 //Constants, Types and Error Handler
-import { ProductMessage } from "../utills/constants";
+import { Errors, ProductMessage } from "../utills/constants";
 import ProductAttributes from "../types/productType";
 import { ValidationError } from "../utills/custom_error";
 
@@ -41,7 +41,7 @@ class ProductService {
     data?: ProductAttributes;
   }> {
     if (!product_name || !product_price) {
-      throw new ValidationError(ProductMessage.Validation);
+      Logger.error('Product Validation Failed createProduct - in service',ProductMessage.Validation)
     }
     const newProduct = new ProductModel({
       product_name: product_name,
@@ -49,6 +49,8 @@ class ProductService {
     });
 
     await newProduct.save();
+
+    Logger.info('Product created successfully - in service', ProductMessage.CreateSuccess)
 
     return {
       success: true,
@@ -74,11 +76,18 @@ class ProductService {
     product_name: string,
     product_price: string
   ): Promise<ProductAttributes | null> {
-    return await ProductModel.findByIdAndUpdate(
+    const result = await ProductModel.findByIdAndUpdate(
       id,
       { product_name, product_price },
       { new: true }
     );
+    if(result){
+      Logger.info('Product Updated successfully - in service', ProductMessage.UpdateSuccess)
+      return result
+    }else{
+      Logger.info('Something Went Wrong while Updated product - in service', Errors.UpdateProductError)
+      return null;
+    }
   }
 
   /**
@@ -92,7 +101,14 @@ class ProductService {
    * @throws {MongooseError} - Thrown if there's an issue with the database operation.
    */
   async deleteProduct(id: string): Promise<ProductAttributes | null> {
-    return await ProductModel.findByIdAndDelete(id);
+    const result =  await ProductModel.findByIdAndDelete(id);
+    if(result){
+      Logger.info('Product deleted successfully - in service', ProductMessage.DeleteSuccess)
+      return result
+    }else{
+      Logger.info('Something Went Wrong while delete product - in service', Errors.DeleteProductError)
+      return null;
+    }
   }
 }
 

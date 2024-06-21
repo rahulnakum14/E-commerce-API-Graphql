@@ -1,4 +1,4 @@
-// Defaults 
+// Defaults
 import { GraphQLResolveInfo } from "graphql";
 import { ApolloError, UserInputError } from "apollo-server-errors";
 
@@ -7,7 +7,6 @@ import { CustomError } from "../../utills/custom_error";
 import productServices from "../../services/product.services";
 import logger from "../../utills/logger";
 import { Errors, ProductMessage } from "../../utills/constants";
-
 
 /** UserContext.ts */
 // import { BaseContext } from "@apollo/server";
@@ -45,6 +44,7 @@ const productResolvers = {
       try {
         return await productServices.getAllProducts();
       } catch (error) {
+        Logger.error(Errors.GetAllProductsError);
         throw new ApolloError(Errors.GetAllProductsError);
       }
     },
@@ -95,8 +95,8 @@ const productResolvers = {
             throw new UserInputError(error.message);
           }
         }
-        logger.fatal(Errors.CreateProductError);
-        throw new ApolloError(Errors.GenericError);
+        Logger.error('createProduct',Errors.CreateProductError);
+        throw new ApolloError(Errors.CreateProductError);
       }
     },
 
@@ -136,7 +136,7 @@ const productResolvers = {
           data: upatedProduct,
         };
       } catch (error) {
-        logger.error(Errors.UpdateProductError);
+        Logger.error(Errors.UpdateProductError);
         throw new ApolloError(Errors.UpdateProductError);
       }
     },
@@ -168,7 +168,7 @@ const productResolvers = {
           data: deleteProduct,
         };
       } catch (error) {
-        logger.error(Errors.DeleteProductError);
+        Logger.error(Errors.DeleteProductError);
         throw new ApolloError(Errors.DeleteProductError);
       }
     },

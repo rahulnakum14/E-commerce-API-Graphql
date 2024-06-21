@@ -45,6 +45,7 @@ const paymentResolvers = {
             throw new UserInputError(error.message);
           }
         }
+        Logger.error('Get Payment Url',PaymentMessage.InternalServerError)
         throw new Error(PaymentMessage.InternalServerError);
       }
     },
@@ -76,6 +77,7 @@ const paymentResolvers = {
             throw new UserInputError(error.message);
           }
         }
+        Logger.error('orderSuccess',PaymentMessage.InternalServerError)
         throw new Error(PaymentMessage.InternalServerError);
       }
     },
@@ -95,6 +97,8 @@ const paymentResolvers = {
         const message = await paymentServices.placedOrder();
         return { message };
       } catch (error) {
+        Logger.error('placedOrder',PaymentMessage.InternalServerError)
+
         throw new Error(PaymentMessage.InternalServerError);
       }
     },

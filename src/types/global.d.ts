@@ -1,7 +1,10 @@
 // User Types
 import UserAttributes from "./userType";
+import { Logger } from "../utills/logger";
 
 declare global {
+  var Logger: Logger;
+
   namespace Express {
     /**
      * @namespace Express
@@ -9,7 +12,7 @@ declare global {
      * @property {UserAttributes} [user] - Represents the user associated with the request.
      */
 
-    export interface Request {
+    interface Request {
       user?: UserAttributes;
     }
     /**
@@ -18,8 +21,10 @@ declare global {
      * @interface Response
      * @property {UserAttributes} [user] - Represents user-related data in the response.
      */
-    export interface Response {
+    interface Response {
       user?: UserAttributes;
     }
   }
 }
+
+export { };
