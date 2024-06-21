@@ -18,6 +18,7 @@ export function sendErrorResponse(
   errorMessage?: string
 ) {
   if (!res) {
+    Logger.error('Response object is undefined');
     throw new Error('Response object is undefined');
   }
 

@@ -18,10 +18,12 @@ export const connectDb = async () => {
     });
 
     mongoose.connection.once("open", () => {
+      Logger.info("Connected to MongoDB");
       console.log("Connected to MongoDB");
     });
 
     mongoose.connection.on("error", (error) => {
+      Logger.error("Database connection error:", error);
       console.error("Database connection error:", error);
     });
   } catch (error) {

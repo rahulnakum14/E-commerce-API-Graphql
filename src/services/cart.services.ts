@@ -20,7 +20,6 @@ import {
   ValidationError,
 } from "../utills/custom_error";
 
-
 class CartServices {
   /**
    * Retrieves cart details for a given user ID.
@@ -37,7 +36,14 @@ class CartServices {
         model: "userModel",
       })
       .populate("products");
-    return cartDetails;
+
+    if (!cartDetails) {
+      Logger.warn(`No cart details found for userID: ${userID}`);
+      return [];
+    }
+
+    Logger.info(`Successfully fetched cart details for userID: ${userID}`);
+    return cartDetails; // Return cartDetails if truthy
   }
 
   /**
@@ -65,11 +71,16 @@ class CartServices {
     data?: CartAttributes;
   }> {
     if (!isValidObjectId(product_id)) {
+      Logger.warn(
+        "addProduct Cart - (Cart Service)",
+        ProductMessage.InvalidIdFormat
+      );
       throw new ValidationError(ProductMessage.InvalidIdFormat);
     }
     const product_exist = await ProductModel.findOne({ _id: product_id });
 
     if (!product_exist) {
+      Logger.error("addProduct Cart - (Cart Service)", ProductMessage.NotFound);
       throw new ProductError(ProductMessage.NotFound);
     }
 
@@ -160,17 +171,27 @@ class CartServices {
       .populate("products");
 
     if (!cartExist) {
+      Logger.error(PaymentMessage.CartNotFound);
       throw new CartError(PaymentMessage.CartNotFound);
     }
 
     if (!isValidObjectId(product_id)) {
+      Logger.error(
+        "Invalid Format while remove product cart - (cart service)",
+        PaymentMessage.CartNotFound
+      );
+
       throw new ValidationError(ProductMessage.InvalidIdFormat);
     }
 
     const productExist = await ProductModel.findById(product_id);
 
     if (!productExist) {
-      throw new CartError(CartMessages.ProductNotInCart);
+      Logger.error(
+        "Product not found cart while remove product cart - (cart service)",
+        ProductMessage.NotFound
+      );
+      throw new CartError(ProductMessage.NotFound);
     }
 
     const productIndex = cartExist.products.findIndex(
@@ -187,12 +208,21 @@ class CartServices {
       }
 
       await cartExist.save();
+      Logger.info(
+        "Product removed successfully..- (cart service)",
+        CartMessages.ProductRemoved
+      );
+
       return {
         success: true,
         message: CartMessages.ProductRemoved,
         data: cartExist,
       };
     } else {
+      Logger.error(
+        "Product not in cart cart while remove product cart - (cart service)",
+        CartMessages.ProductNotInCart
+      );
       throw new CartError(CartMessages.ProductNotInCart);
     }
   }

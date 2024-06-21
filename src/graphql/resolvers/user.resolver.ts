@@ -1,12 +1,11 @@
 // Defaults
 import { ApolloError, UserInputError } from "apollo-server-errors";
 
-// Other Configs 
+// Other Configs
 import userService from "../../services/user.services";
 import { CustomError } from "../../utills/custom_error";
 import { verifyEmail } from "../../helper/mailServices";
 import { Errors } from "../../utills/constants";
-import logger from "../../utills/logger";
 
 const userResolvers = {
   /**
@@ -27,7 +26,7 @@ const userResolvers = {
       try {
         return await verifyEmail(args.signupToken);
       } catch (error) {
-        logger.fatal(Errors.EmailVerifyError);
+        Logger.error(Errors.EmailVerifyError);
         throw new ApolloError(Errors.EmailVerifyError);
       }
     },
@@ -42,7 +41,7 @@ const userResolvers = {
       try {
         return await userService.getAllUsers();
       } catch (error) {
-        logger.fatal(Errors.GetAllUsers);
+        Logger.error(Errors.GetAllUsers);
         throw new ApolloError(Errors.GetAllUsers);
       }
     },
@@ -82,7 +81,7 @@ const userResolvers = {
             data: result.data,
           };
         } else {
-          logger.fatal(Errors.signUpError);
+          Logger.error(Errors.signUpError);
           throw new ApolloError(Errors.signUpError);
         }
       } catch (error) {
@@ -136,7 +135,8 @@ const userResolvers = {
             throw new UserInputError(error.message);
           }
         }
-        throw new ApolloError(Errors.GenericError);
+        Logger.error(Errors.loginError);
+        throw new ApolloError(Errors.loginError);
       }
     },
   },

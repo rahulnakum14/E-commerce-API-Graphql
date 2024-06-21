@@ -17,9 +17,10 @@ import typeDefs from "./graphql/schema";
 import { connectDb } from "./config/db";
 import AuthMiddleware from "./middlewares/auth";
 import permissions from "./graphql/rules/permission";
+import Logger from "./utills/logger";
 
 dotenv.config();
-
+global.Logger = Logger;
 // Creates the Express application instance.
 const app = express();
 
@@ -30,6 +31,7 @@ const httpServer = http.createServer(app);
  * Starts the Apollo Server asynchronously.
  * This function also connects to the database and configures middleware.
  */
+
 const startServer = async () => {
   // Create an executable schema
   const schema = makeExecutableSchema({ typeDefs, resolvers });
@@ -44,7 +46,7 @@ const startServer = async () => {
     // Format the Error to hide sensitive fields....
     formatError: (error) => {
       // Here you can customize the error formatting
-      console.error(error); // Log the error for debugging purposes
+      Logger.error(error); 
 
       // Hide sensitive information if needed
       const { extensions, locations, path, ...rest } = error;
@@ -68,13 +70,13 @@ const startServer = async () => {
 
   const PORT = process.env.PORT || 4000;
   httpServer.listen({ port: PORT }, () => {
-    console.log(`Server is running on http://localhost:${PORT}/graphql`);
+    Logger.info(`Server is running on http://localhost:${PORT}/graphql`); 
   });
 };
 
 // Start the server and catch any errors
 startServer().catch((error) => {
-  console.error("Failed to start server:", error);
+  Logger.error("Failed to start server:", error);
 });
 
 /**New Working Code */

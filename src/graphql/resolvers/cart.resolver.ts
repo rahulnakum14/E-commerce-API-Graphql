@@ -35,6 +35,7 @@ const cartResolvers = {
         const cartDetails = await cartServices.getCartDetails(context.user.id);
         return cartDetails;
       } catch (error) {
+        Logger.error(Errors.GetCartDetails);
         throw new ApolloError(Errors.GetCartDetails);
       }
     },
@@ -87,10 +88,11 @@ const cartResolvers = {
             throw new UserInputError(error.message);
           }
         }
+        Logger.error(CartMessages.AddToCartError);
         throw new Error(CartMessages.AddToCartError);
       }
     },
-    
+
     /**
      * Removes a product from the user's cart (requires authentication).
      *
@@ -130,6 +132,7 @@ const cartResolvers = {
             throw new UserInputError(error.message);
           }
         }
+        Logger.error(CartMessages.RemoveFromCartError);
         throw new Error(CartMessages.RemoveFromCartError);
       }
     },

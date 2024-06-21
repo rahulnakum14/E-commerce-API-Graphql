@@ -70,13 +70,20 @@ class UserService {
     data?: UserAttributes;
   }> {
     if (!validateUser(username, password, email)) {
+      Logger.error(
+        "User Validation error (Register user)- user services",
+        UserMessage.Validation
+      );
       throw new ValidationError(UserMessage.Validation);
     }
 
     const isExists = await findUser(username, email);
 
     if (isExists) {
-      logger.warn(UserMessage.Exists);
+      Logger.warn(
+        "User Already Exist (Register user) - user services",
+        UserMessage.Exists
+      );
       throw new UserExistsError(UserMessage.Exists);
     }
 
@@ -98,7 +105,10 @@ class UserService {
 
     sendEmail(newUser.email, UserMessage.VerifyEmail, verificationLink);
 
-    logger.info(UserMessage.RegisterSuccess);
+    Logger.info(
+      "User Successfully Registered - in services",
+      UserMessage.RegisterSuccess
+    );
 
     return {
       success: true,
@@ -137,6 +147,11 @@ class UserService {
         },
       }); 
       */
+      Logger.error(
+        "User Validation error (Login user)- user services",
+        UserMessage.Validation
+      );
+
       throw new ValidationError(UserMessage.Validation);
     }
 
@@ -144,13 +159,16 @@ class UserService {
     const user = await UserModel.findOne({ username });
 
     if (!user) {
-      logger.warn(UserMessage.InvalidCredentials);
+      Logger.warn(
+        "Invalid User Credentials (Login user)- user services",
+        UserMessage.InvalidCredentials
+      );
       throw new InvalidCredentialsError(UserMessage.InvalidCredentials);
     }
 
     // Check if the user is verified
     if (!user.isVerified) {
-      logger.warn(UserMessage.VerifyEmailFailed);
+      Logger.warn("(Login user)- user services", UserMessage.VerifyEmailFailed);
       throw new VerificationEmailError(UserMessage.VerifyEmailFailed);
     }
 
@@ -158,6 +176,11 @@ class UserService {
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
+      Logger.warn(
+        "Invalid User Credentials isMatch (Login user)- user services",
+        UserMessage.InvalidCredentials
+      );
+
       logger.warn(UserMessage.InvalidCredentials);
       throw new InvalidCredentialsError(UserMessage.InvalidCredentials);
     }
@@ -165,7 +188,10 @@ class UserService {
     // Generate token
     const token = generateToken(user);
 
-    logger.info(UserMessage.LoginSuccess);
+    Logger.info(
+      "User Successfully Logged in - in services",
+      UserMessage.LoginSuccess
+    );
 
     return {
       token: token as string,
