@@ -5,14 +5,10 @@ type Query {
 
 type Mutation {
   "Add product to cart"
-  addProductCart(
-    product_id: String!
-    quantity: String!
-  ): CartResponse!
-  
-  removeProductCart(
-    product_id: String!
-  ): CartResponse!
+  addProductCart(product_id: String!, quantity: String!): CartResponse!
+
+  "Remove product to cart"
+  removeProductCart(product_id: String!): CartResponse!
 }
 
 schema {
