@@ -35,7 +35,7 @@ class AuthMiddleware {
 
     const user = validateToken(tokenSplit);
     if (!user) {
-      return { error: `${Errors.InvalidToken}` };
+      return { error: `${Errors.InvalidToken}` }
     }
 
     return { user: user as UserAttributes };
