@@ -7,7 +7,6 @@ import paymentServices from "../../services/payment.services";
 import { CustomError } from "../../utills/custom_error";
 import { PaymentMessage } from "../../utills/constants";
 
-
 const paymentResolvers = {
   /**
    * Represents the Query type in the GraphQL schema.
@@ -45,7 +44,7 @@ const paymentResolvers = {
             throw new UserInputError(error.message);
           }
         }
-        Logger.error('Get Payment Url',PaymentMessage.InternalServerError)
+        Logger.error("Get Payment Url", PaymentMessage.InternalServerError);
         throw new Error(PaymentMessage.InternalServerError);
       }
     },
@@ -77,7 +76,7 @@ const paymentResolvers = {
             throw new UserInputError(error.message);
           }
         }
-        Logger.error('orderSuccess',PaymentMessage.InternalServerError)
+        Logger.error("orderSuccess", PaymentMessage.InternalServerError);
         throw new Error(PaymentMessage.InternalServerError);
       }
     },
@@ -97,8 +96,7 @@ const paymentResolvers = {
         const message = await paymentServices.placedOrder();
         return { message };
       } catch (error) {
-        Logger.error('placedOrder',PaymentMessage.InternalServerError)
-
+        Logger.error("placedOrder", PaymentMessage.InternalServerError);
         throw new Error(PaymentMessage.InternalServerError);
       }
     },
