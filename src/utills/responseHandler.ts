@@ -11,10 +11,18 @@ export function successResponse<T>(
   return res.status(statusCode).json({ msg: msg, data: data });
 }
 
+
 export function sendErrorResponse(
   res?: Response,
   statusCode?: number,
   errorMessage?: string
 ) {
-  return res.status(statusCode).json({ error: errorMessage });
+  if (!res) {
+    throw new Error('Response object is undefined');
+  }
+
+  // Ensure statusCode is defined or provide a default value (e.g., 500 for Internal Server Error)
+  const status = statusCode || 500;
+
+  return res.status(status).json({ error: errorMessage });
 }

@@ -1,4 +1,4 @@
-// errors.ts
+// Custom Error Handler
 export class CustomError extends Error {
   public code: string;
 
@@ -31,8 +31,18 @@ export class ProductError extends CustomError {
     super(message, "PRODUCT");
   }
 }
+export class CartError extends CustomError {
+  constructor(message: string) {
+    super(message, "CART");
+  }
+}
 export class VerificationEmailError extends CustomError {
   constructor(message: string) {
     super(message, "EMAIL_VERIFICATION_FAILED");
+  }
+}
+export class StripeKeyError extends CustomError {
+  constructor(message: string) {
+    super(message, "STRIPE_KEY_NOT_FOUND");
   }
 }

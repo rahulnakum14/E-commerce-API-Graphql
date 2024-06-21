@@ -1,7 +1,7 @@
 /** Constant Of the User */
 
 export const UserMessage = {
-  Validation: "Please provide username, email, and password.",
+  Validation: "Please provide valid username, email, and password.",
   Exists: "Email or Username Is Already Exists.",
   RegisterSuccess: "User Registered Successfully.",
   NotFound: "User Not Found.",
@@ -28,10 +28,11 @@ export const ProductMessage = {
 /** Constant Of the Payment */
 
 export const PaymentMessage = {
+  StripeKeyError: "Stripe key not found",
   OrderSuccess: "Order Placed SuccessFully",
   CartNotFound: "Cart not found",
   UserCartNotFound: "User or Cart not found",
-  InternalServerError: "Internal Server Error",
+  InternalServerError: "Internal Server Error while making payment",
   EmailSendingError: "Error sending email",
   PDFStreamError: "Error writing PDF stream",
   PDFCreationError: "Error creating PDF",
@@ -49,14 +50,22 @@ export const CartMessages = {
   ProductAdded: "Product added to cart successfully.",
 };
 
+/** Constant Of the Erros */
 
 export const Errors = {
+  EmailError: "Enter a valid email.",
+  TokenNotExist: "Unauthorized or Token does not exist",
+  TokenFormat: "Invalid token format",
+  InvalidToken: "Token is invalid",
+  authenticated: "User Is not authenticated",
   EmailVerifyError: "Internal Server Error while verifying email.",
   GetAllUsers: "Internal Server Error while fetching users.",
+  GetCartDetails: "Internal Server Error while fetching cart details.",
   signUpError: "Internal Server Error while Signup",
   UpdateProductError: "Internal Server Error while Updating the product",
   DeleteProductError: "Internal Server Error while Deleting the product",
   GetAllProductsError: "Internal Server Error while fetching uproducts.",
   CreateProductError: "Internal Server Error while creating products.",
-  GenericError:"Internal Server Error While running an applo server."
+  CartDetailsError: "Internal Server Error while fetching CartDetails.",
+  GenericError: "Internal Server Error While running an applo server.",
 };

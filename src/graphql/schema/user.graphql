@@ -1,6 +1,9 @@
 type Query {
-  verifyEmail(signupToken: String!): VerifyEmailResponse!
+  "Get All Users"
   getUsers: [User]!
+
+  "Verify Email"
+  verifyEmail(signupToken: String!): VerifyEmailResponse!
 }
 
 type Mutation {
