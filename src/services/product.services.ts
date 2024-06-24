@@ -6,7 +6,6 @@ import { ProductMessage } from "../utills/constants";
 import ProductAttributes from "../types/productType";
 import { ValidationError } from "../utills/custom_error";
 import client from '../config/redis';
-import { Types } from "mongoose";
 
 class ProductService {
 
@@ -30,9 +29,10 @@ class ProductService {
       console.log('Data fetched from cache');
       const products = JSON.parse(cachedData);
       return products.map((product: any) => ({
+        ...product,
         id: product._id.toString(), // Transform _id to string as needed
-        product_name: product.product_name,
-        product_price: product.product_price,
+        // product_name: product.product_name,
+        // product_price: product.product_price,
       }));
     }
 
@@ -110,9 +110,6 @@ class ProductService {
     product_name: string,
     product_price: string
   ): Promise<ProductAttributes | null> {
-    console.log('this is id',id);
-    console.log('this is id',typeof(id));
-
     const updatedProduct = await ProductModel.findByIdAndUpdate(
       id.toString(),
       { product_name, product_price },

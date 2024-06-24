@@ -21,7 +21,13 @@ import {
 } from "../utills/custom_error";
 
 
+//Caching Using Redis
+import client from '../config/redis';
+
 class CartServices {
+
+  static CACHE_EXPIRATION = parseInt(process.env.CACHE_EXPIRATION || '3600', 10); // Cache expiration time in seconds
+
   /**
    * Retrieves cart details for a given user ID.
    *
@@ -31,12 +37,35 @@ class CartServices {
    * @throws {MongooseError} - Throw a Mongoose error if there's an issue with the database query.
    */
   async getCartDetails(userID: string): Promise<CartAttributes[]> {
+    const cacheKey = 'userCarts';
+
+    const cachedData = await client.get(cacheKey);
+
+    if (cachedData) {
+      console.log('Data fetched from cache');
+      const carts = JSON.parse(cachedData);
+      return carts.map((cart: any) => ({
+        ...cart,
+        id: cart._id.toString(),
+        cart_user: cart.cart_user ? {
+          id: cart.cart_user._id.toString(),
+          username: cart.cart_user.username,
+          email: cart.cart_user.email,
+          password: cart.cart_user.password,
+        } : null,
+      }));
+    }
+
+    console.log('Cache miss. Fetching from database...');
+
     const cartDetails = await CartModel.find({ cart_user: userID })
       .populate({
         path: "cart_user",
         model: "userModel",
       })
-      .populate("products");
+      .populate("products");      
+    await client.set(cacheKey, JSON.stringify(cartDetails), 'EX', CartServices.CACHE_EXPIRATION);
+    console.log('Data cached');
     return cartDetails;
   }
 
@@ -95,6 +124,10 @@ class CartServices {
       });
 
       await newCart.save();
+      const cacheKey = `cart:${newCart._id}`;
+      await client.set(cacheKey, JSON.stringify(newCart), 'EX', CartServices.CACHE_EXPIRATION);
+
+      await client.del('userCarts');
 
       return {
         success: true,
@@ -187,6 +220,10 @@ class CartServices {
       }
 
       await cartExist.save();
+      const cacheKey = `cart:${cartExist._id}`;
+      await client.set(cacheKey, JSON.stringify(cartExist), 'EX', CartServices.CACHE_EXPIRATION);
+      await client.del('userCarts');
+
       return {
         success: true,
         message: CartMessages.ProductRemoved,

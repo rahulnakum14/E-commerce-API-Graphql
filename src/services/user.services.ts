@@ -18,9 +18,13 @@ import {
   InvalidCredentialsError,
   VerificationEmailError,
 } from "../utills/custom_error";
-import { GraphQLError } from "graphql";
+import client from '../config/redis';
 
 class UserService {
+
+  // Setting up the cache_expiration
+  static CACHE_EXPIRATION = parseInt(process.env.CACHE_EXPIRATION || '3600', 10); // Cache expiration time in seconds
+
   /**
    * Retrieves all users from the database.
    *
@@ -28,7 +32,27 @@ class UserService {
    * @returns {Promise<UserAttributes[]>} An array containing all user attributes.
    */
   async getAllUsers(): Promise<UserAttributes[]> {
-    return await UserModel.find({});
+    const cacheKey = 'allUsers';
+    // Try to get data from Redis cache
+    const cachedData = await client.get(cacheKey);
+
+    if (cachedData) {
+      console.log('Data fetched from cache');
+      const users = JSON.parse(cachedData);
+      return users.map((user: any) => ({
+        ...user,
+        id: user._id.toString(), // Transform _id to string as needed
+        // username: user.username,
+        // email: user.email,
+        // password: user.password,
+      }));
+    }
+    console.log('Cache miss. Fetching from database...');
+
+    const users = await UserModel.find({});
+    await client.set(cacheKey, JSON.stringify(users), 'EX', UserService.CACHE_EXPIRATION);
+    console.log('Data cached');
+    return users;
   }
 
   /**
@@ -99,6 +123,13 @@ class UserService {
     sendEmail(newUser.email, UserMessage.VerifyEmail, verificationLink);
 
     logger.info(UserMessage.RegisterSuccess);
+
+    // Update cache after successful creation
+    const cacheKey = `user:${newUser._id}`;
+    await client.set(cacheKey, JSON.stringify(newUser), 'EX', UserService.CACHE_EXPIRATION);
+
+    // Invalidate all Users cache
+    await client.del('allUsers');
 
     return {
       success: true,
