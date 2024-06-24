@@ -18,7 +18,6 @@ import {
   InvalidCredentialsError,
   VerificationEmailError,
 } from "../utills/custom_error";
-import { GraphQLError } from "graphql";
 
 class UserService {
   /**
@@ -28,7 +27,11 @@ class UserService {
    * @returns {Promise<UserAttributes[]>} An array containing all user attributes.
    */
   async getAllUsers(): Promise<UserAttributes[]> {
-    return await UserModel.find({});
+    const users = await UserModel.find({}).lean();
+    return users.map(user =>({
+      ...user,
+      id: user._id.toString(),
+    }))
   }
 
   /**

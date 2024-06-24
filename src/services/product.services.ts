@@ -4,7 +4,6 @@ import ProductModel from "../models/productModel";
 //Constants, Types and Error Handler
 import { Errors, ProductMessage } from "../utills/constants";
 import ProductAttributes from "../types/productType";
-import { ValidationError } from "../utills/custom_error";
 
 class ProductService {
   /**
@@ -16,7 +15,11 @@ class ProductService {
    * @throws {MongooseError} - May throw a Mongoose error if there's an issue with the database query.
    */
   async getAllProducts(): Promise<ProductAttributes[]> {
-    return await ProductModel.find({});
+    const products = await ProductModel.find({}).lean();
+    return products.map(product => ({
+      ...product,
+      id: product._id.toString(),
+    }));
   }
 
   /**
@@ -41,7 +44,10 @@ class ProductService {
     data?: ProductAttributes;
   }> {
     if (!product_name || !product_price) {
-      Logger.error('Product Validation Failed createProduct - in service',ProductMessage.Validation)
+      Logger.error(
+        "Product Validation Failed createProduct - in service",
+        ProductMessage.Validation
+      );
     }
     const newProduct = new ProductModel({
       product_name: product_name,
@@ -50,7 +56,10 @@ class ProductService {
 
     await newProduct.save();
 
-    Logger.info('Product created successfully - in service', ProductMessage.CreateSuccess)
+    Logger.info(
+      "Product created successfully - in service",
+      ProductMessage.CreateSuccess
+    );
 
     return {
       success: true,
@@ -81,11 +90,17 @@ class ProductService {
       { product_name, product_price },
       { new: true }
     );
-    if(result){
-      Logger.info('Product Updated successfully - in service', ProductMessage.UpdateSuccess)
-      return result
-    }else{
-      Logger.info('Something Went Wrong while Updated product - in service', Errors.UpdateProductError)
+    if (result) {
+      Logger.info(
+        "Product Updated successfully - in service",
+        ProductMessage.UpdateSuccess
+      );
+      return result;
+    } else {
+      Logger.info(
+        "Something Went Wrong while Updated product - in service",
+        Errors.UpdateProductError
+      );
       return null;
     }
   }
@@ -101,12 +116,18 @@ class ProductService {
    * @throws {MongooseError} - Thrown if there's an issue with the database operation.
    */
   async deleteProduct(id: string): Promise<ProductAttributes | null> {
-    const result =  await ProductModel.findByIdAndDelete(id);
-    if(result){
-      Logger.info('Product deleted successfully - in service', ProductMessage.DeleteSuccess)
-      return result
-    }else{
-      Logger.info('Something Went Wrong while delete product - in service', Errors.DeleteProductError)
+    const result = await ProductModel.findByIdAndDelete(id);
+    if (result) {
+      Logger.info(
+        "Product deleted successfully - in service",
+        ProductMessage.DeleteSuccess
+      );
+      return result;
+    } else {
+      Logger.info(
+        "Something Went Wrong while delete product - in service",
+        Errors.DeleteProductError
+      );
       return null;
     }
   }
