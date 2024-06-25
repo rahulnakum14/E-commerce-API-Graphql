@@ -7,6 +7,7 @@ import { CustomError } from "../../utills/custom_error";
 import { verifyEmail } from "../../helper/mailServices";
 import { Errors } from "../../utills/constants";
 import logger from "../../utills/logger";
+import UserAttributes from "../../types/userType";
 
 const userResolvers = {
   /**
@@ -38,7 +39,7 @@ const userResolvers = {
      * @returns {Promise<User[]>} Promise that resolves to an array of User objects.
      * @throws {ApolloError} - Thrown for errors during user retrieval.
      */
-    getUsers: async () => {
+    getUsers: async (): Promise<UserAttributes[]> => {
       try {
         return await userService.getAllUsers();
       } catch (error) {
