@@ -82,6 +82,12 @@ startServer().catch((error) => {
   Logger.error("Failed to start server:", error);
 });
 
+/**
+ * Setup the Husky Code.
+ *
+ * https://duncanlew.medium.com/getting-started-with-husky-and-lint-staged-for-pre-commit-hooks-c2764d8c9ae
+ */
+
 /**New Working Code */
 // const app = express();
 // const httpServer = http.createServer(app);
