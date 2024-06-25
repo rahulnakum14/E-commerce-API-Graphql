@@ -36,6 +36,8 @@ const startServer = async () => {
   // Create an executable schema
   const schema = makeExecutableSchema({ typeDefs, resolvers });
 
+  console.log('test');
+  
   // Apply graphql-shield middleware to the schema
   const schemaWithMiddleware = applyMiddleware(schema, permissions);
 
