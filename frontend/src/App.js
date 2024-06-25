@@ -1,46 +1,47 @@
-import styles from "./App.module.css";
-import User from "./components/User";
 import { useState } from "react";
+import "./App.css";
 
 function App() {
-  // const tmp = [
-  //   { name: "qwerty", isAge: 45 },
-  //   { name: "aaaaaaaaa", isAge: 50 },
-  //   { name: "ewrwer", isAge: 20 },
-  // ];
 
-  // const [age, setAge] = useState(5);
+  const [todoList, setTodoList] = useState([]);
+  const [newTask, setNewTask] = useState("");
 
-  // const IncreaseAge = () => {
-  //   setAge(age + 1);
-  // };
+  const handleOnChange = (e) => {
+    setNewTask(e.target.value);
+  };
 
-  const [inputValue, setInputValue] = useState("black");
+  const handleAddTask = () => {
+    const newTodoList = [...todoList, newTask];
+    setTodoList(newTodoList);
+    setNewTask("")
+  };
 
+  const deleteTask = (taskName) => {
+    // const newTodoList = todoList.filter((task,key) =>{
+    //   if(task === taskName ){
+    //     return false
+    //   }
+    //   return true
+    // })
+    // setTodoList(newTodoList)
+
+    //Or 
+
+    setTodoList(todoList.filter((task) => task !== taskName));
+
+  }
+ 
   return (
-    <div className={styles.App}>
-      <button
-        onClick={() => {
-          setInputValue("red");
-        }}
-      >
-        SHow/hide
-      </button>
-      {inputValue ? <h1 style={{ color: inputValue }}>Testing Text</h1> : null}
-
-      {/* {inputValue} */}
-
-      {/* <button onClick={IncreaseAge}>Increase Age</button>
-
-      {age} */}
-
-      {/* {tmp.map((value, key) => {
-        return <User key={key} name={value.name} age={value.isAge} />;
-      })} */}
-
-      {/* {tmp > 18? <h1>Greater than 18</h1>: <h1>Under 18</h1>} */}
-      {/* <User name="asdad" email="sdfs@sdfssssssssssssss.com"/> */}
-      {/* <User className={styles.name} name="we32" email="ddddddd@sdfssssssssssssss.com"/> */}
+    <div className="App">
+      <div className="addTask">
+        <input onChange={handleOnChange}></input>
+        <button onClick={handleAddTask}> Add new Task</button>
+      </div>
+      <div className="list">
+        {todoList.map((task,key) => {
+          return <div key = {key}><h1 >{task}</h1><button onClick={() => deleteTask(task)}>x</button></div>
+        })}
+      </div>
     </div>
   );
 }
