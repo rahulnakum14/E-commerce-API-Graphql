@@ -36,8 +36,7 @@ const startServer = async () => {
   // Create an executable schema
   const schema = makeExecutableSchema({ typeDefs, resolvers });
 
-  console.log('test');
-  
+  console.log("test");
   // Apply graphql-shield middleware to the schema
   const schemaWithMiddleware = applyMiddleware(schema, permissions);
 
@@ -48,10 +47,12 @@ const startServer = async () => {
     // Format the Error to hide sensitive fields....
     formatError: (error) => {
       // Here you can customize the error formatting
-      Logger.error(error); 
+      Logger.error(error);
 
       // Hide sensitive information if needed
       const { extensions, locations, path, ...rest } = error;
+      console.log(extensions, locations, path);
+
       return rest;
     },
   });
@@ -67,12 +68,12 @@ const startServer = async () => {
       context: async ({ req }) => {
         return await AuthMiddleware.authenticateToken(req);
       },
-    })
+    }),
   );
 
   const PORT = process.env.PORT || 4000;
   httpServer.listen({ port: PORT }, () => {
-    Logger.info(`Server is running on http://localhost:${PORT}/graphql`); 
+    Logger.info(`Server is running on http://localhost:${PORT}/graphql`);
   });
 };
 
