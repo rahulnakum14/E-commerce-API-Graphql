@@ -1,48 +1,30 @@
-import { useState } from "react";
-import "./App.css";
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import ApolloAppProvider from './ApolloProvider';
+import Login from './components/Login';
+import Signup from './components/Signup';
+import Home from './components/Home';
+import VerifyEmail from './components/VerifyEmail'
 
 function App() {
-
-  const [todoList, setTodoList] = useState([]);
-  const [newTask, setNewTask] = useState("");
-
-  const handleOnChange = (e) => {
-    setNewTask(e.target.value);
-  };
-
-  const handleAddTask = () => {
-    const newTodoList = [...todoList, newTask];
-    setTodoList(newTodoList);
-    setNewTask("")
-  };
-
-  const deleteTask = (taskName) => {
-    // const newTodoList = todoList.filter((task,key) =>{
-    //   if(task === taskName ){
-    //     return false
-    //   }
-    //   return true
-    // })
-    // setTodoList(newTodoList)
-
-    //Or 
-
-    setTodoList(todoList.filter((task) => task !== taskName));
-
-  }
- 
   return (
-    <div className="App">
-      <div className="addTask">
-        <input onChange={handleOnChange}></input>
-        <button onClick={handleAddTask}> Add new Task</button>
-      </div>
-      <div className="list">
-        {todoList.map((task,key) => {
-          return <div key = {key}><h1 >{task}</h1><button onClick={() => deleteTask(task)}>x</button></div>
-        })}
-      </div>
-    </div>
+    <ApolloAppProvider>
+      <Router>
+        <div className="container mx-auto p-4">
+          <nav className="mb-4">
+            <Link to="/" className="mr-4 text-blue-500">Home</Link>
+            <Link to="/login" className="mr-4 text-blue-500">Login</Link>
+            <Link to="/signup" className="text-blue-500">Signup</Link>
+          </nav>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/verify-email" element={<VerifyEmail />} />
+            <Route path="/" element={<Home />} />
+          </Routes>
+        </div>
+      </Router>
+    </ApolloAppProvider>
   );
 }
 
