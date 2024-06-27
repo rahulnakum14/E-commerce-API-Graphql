@@ -1,36 +1,37 @@
-import React, { useEffect, useState } from 'react';
-import { useMutation } from '@apollo/client';
-import { useLocation } from 'react-router-dom';
-import { VERIFY_EMAIL } from '../queries/verifyEmail';
+import React, { useState, useEffect } from 'react';
+import { useQuery } from '@apollo/client';
+import { useParams } from 'react-router-dom';
+import { VERIFY_EMAIL } from '../graphql/queries';
 
 function VerifyEmail() {
-  const [verifyEmail, { data, loading, error }] = useMutation(VERIFY_EMAIL);
+  const { token } = useParams(); // Extract token from URL parameters
+
   const [message, setMessage] = useState('');
-  const location = useLocation();
-  
+
+  const { data, loading } = useQuery(VERIFY_EMAIL, {
+    variables: { signupToken: token },
+    skip: !token,
+    onCompleted: (data) => {
+      if (data.verifyEmail.success) {
+        setMessage('Email verified successfully!');
+      } else {
+        setMessage('Invalid token or email verification failed.');
+      }
+    },
+    onError: (error) => {
+      setMessage('An error occurred during verification.');
+      console.error('Query error:', error);
+    },
+  });
+
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const token = queryParams.get('token');
-    if (token) {
-      verifyEmail({ variables: { signupToken: token } })
-        .then(response => {
-          if (response.data.verifyEmail.success) {
-            setMessage('Email verified successfully!');
-          } else {
-            setMessage('Invalid token or email verification failed.');
-          }
-        })
-        .catch(err => {
-          setMessage('An error occurred during verification.');
-          console.error(err);
-        });
-    } else {
+    if (!token) {
       setMessage('Invalid token.');
     }
-  }, [location.search, verifyEmail]);
+  }, [token]);
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
+    <div className="flex justify-center items-center h-screen">
       <div className="bg-white p-8 rounded shadow-md w-full max-w-md text-center">
         <h1 className="text-2xl font-bold mb-4">Email Verification</h1>
         {loading ? (

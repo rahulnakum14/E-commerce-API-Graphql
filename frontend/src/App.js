@@ -19,7 +19,7 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/verify-email" element={<VerifyEmail />} />
+            <Route path="/user/verifyEmail/:token" element={<VerifyEmail />} /> {/* Correct route setup */}
             <Route path="/" element={<Home />} />
           </Routes>
         </div>
