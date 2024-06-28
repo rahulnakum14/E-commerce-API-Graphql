@@ -22,7 +22,6 @@ function Login() {
     try {
       const { data: { loginUser: { token, user } } } = await loginUser({ variables: { username, password } });
       console.log(token, user);
-      // Handle success (e.g., store token, redirect)
     } catch (err) {
       console.error('Login failed:', err);
     }

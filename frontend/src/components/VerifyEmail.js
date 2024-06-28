@@ -1,32 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import { useQuery } from '@apollo/client';
-import { useParams } from 'react-router-dom';
-import { VERIFY_EMAIL } from '../graphql/queries';
+import React, { useState, useEffect } from "react";
+import { useQuery } from "@apollo/client";
+import { useParams } from "react-router-dom";
+import { VERIFY_EMAIL } from "../graphql/queries";
 
 function VerifyEmail() {
-  const { token } = useParams(); // Extract token from URL parameters
+  const { token } = useParams();
 
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   const { data, loading } = useQuery(VERIFY_EMAIL, {
     variables: { signupToken: token },
     skip: !token,
     onCompleted: (data) => {
       if (data.verifyEmail.success) {
-        setMessage('Email verified successfully!');
+        setMessage("Email verified successfully!");
       } else {
-        setMessage('Invalid token or email verification failed.');
+        setMessage("Invalid token or email verification failed.");
       }
     },
     onError: (error) => {
-      setMessage('An error occurred during verification.');
-      console.error('Query error:', error);
+      setMessage("An error occurred during verification.");
+      console.error("Query error:", error);
     },
   });
 
   useEffect(() => {
     if (!token) {
-      setMessage('Invalid token.');
+      setMessage("Invalid token.");
     }
   }, [token]);
 
@@ -37,7 +37,11 @@ function VerifyEmail() {
         {loading ? (
           <p className="text-blue-500">Verifying...</p>
         ) : (
-          <p className={`text-lg ${data?.verifyEmail.success ? 'text-green-500' : 'text-red-500'}`}>
+          <p
+            className={`text-lg ${
+              data?.verifyEmail.success ? "text-green-500" : "text-red-500"
+            }`}
+          >
             {message}
           </p>
         )}
