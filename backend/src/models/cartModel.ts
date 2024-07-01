@@ -13,7 +13,7 @@ const cartSchema: Schema<CartAttributes> = new Schema(
       {
         product_id: {
           type: String,
-          ref: "ProductModel",
+          ref: "productModel",
           required: true,
         },
         quantity: {

@@ -30,14 +30,35 @@ class CartServices {
    * @returns {Promise<CartAttributes[]>} A promise that resolves to an array of `CartAttributes` objects,
    * @throws {MongooseError} - Throw a Mongoose error if there's an issue with the database query.
    */
-  async getCartDetails(userID: string): Promise<CartAttributes[]> {
+  async getCartDetails(userID: string): Promise<any[]> {
     const cartDetails = await CartModel.find({ cart_user: userID })
-      .populate({
-        path: "cart_user",
-        model: "userModel",
-      })
-      .populate("products");
-    return cartDetails;
+    .populate({
+      path: 'products.product_id',
+      model: 'productModel',
+      select: ['product_name', 'product_price'] // Include product_price in select
+    })
+    .populate({
+      path: 'cart_user',
+      model: 'userModel',
+    });
+
+  const transformedCartDetails = cartDetails.map(cart => ({
+    ...cart.toObject(),
+    id: cart.id.toString(),
+    products: cart.products.map(product => ({
+      ...product,
+      product_name: (product.product_id as any).product_name,
+      price: (product.product_id as any).product_price,
+      quantity: product.quantity,
+      product_id: (product.product_id as any)._id.toString() 
+    })),
+    cart_user: {
+      ...(cart.cart_user as any).toObject(),
+      id: (cart.cart_user as any)._id.toString(),
+    }
+  }));
+
+  return transformedCartDetails;
   }
 
   /**

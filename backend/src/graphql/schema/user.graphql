@@ -16,6 +16,9 @@ type Mutation {
 
   "Login User"
   loginUser(username: String!, password: String!): UserLoginData!
+
+  "Forgot Password"
+  forgotPassword(email: String!): UserResponse!
 }
 
 schema {

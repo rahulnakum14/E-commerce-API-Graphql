@@ -1,13 +1,16 @@
-import React from 'react';
+// src/Login.js
+import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import { useMutation } from '@apollo/client';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useNavigate } from 'react-router-dom';
+import * as yup from 'yup';
+import { AuthContext } from '../context/AuthContext';
 import { LOGIN_USER } from '../graphql/mutations';
 
 const schema = yup.object().shape({
-  username: yup.string().required('Username is required'),
-  password: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+  username: yup.string().required(),
+  password: yup.string().required(),
 });
 
 function Login() {
@@ -15,13 +18,18 @@ function Login() {
     resolver: yupResolver(schema),
   });
 
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const [loginUser, { loading, error }] = useMutation(LOGIN_USER);
 
   const onSubmit = async data => {
     const { username, password } = data;
     try {
       const { data: { loginUser: { token, user } } } = await loginUser({ variables: { username, password } });
-      console.log(token, user);
+      login(user, token); 
+      navigate('/'); 
+
     } catch (err) {
       console.error('Login failed:', err);
     }
@@ -41,6 +49,11 @@ function Login() {
             <label className="block text-gray-700">Password</label>
             <input {...register('password')} type="password" className="w-full p-2 border border-gray-300 rounded mt-1" />
             {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
+          </div>
+          <div className="mb-4 text-right">
+            <a href="/forgot-password" className="text-blue-500 text-sm hover:underline">
+              Forgot Password?
+            </a>
           </div>
           <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
             {loading ? 'Logging in...' : 'Login'}

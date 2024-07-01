@@ -1,18 +1,19 @@
-type ProductInCart {
-  product_id: String
-  quantity: String!
-  price: String
-}
+  type ProductInCart {
+    product_id: String!
+    product_name: String!
+    quantity: String!
+    price: String
+  }
 
-type Cart {
-  id: ID!
-  products: [ProductInCart!]!
-  cart_user: User!
-  total_price: String
-}
+  type Cart {
+    id: ID!
+    products: [ProductInCart!]!
+    cart_user: User!
+    total_price: String
+  }
 
-type CartResponse {
-  success: Boolean!
-  message: String
-  data: Cart!
-}
+  type CartResponse {
+    success: Boolean!
+    message: String
+    data: Cart!
+  }

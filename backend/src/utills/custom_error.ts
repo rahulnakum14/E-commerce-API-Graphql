@@ -46,3 +46,8 @@ export class StripeKeyError extends CustomError {
     super(message, "STRIPE_KEY_NOT_FOUND");
   }
 }
+export class ForgotPassword extends CustomError {
+  constructor(message: string) {
+    super(message, "FORGOT_PASSWORD");
+  }
+}

@@ -9,7 +9,7 @@ import logger from "../utills/logger";
 
 //Other Required Imports
 import { findUser, validateUser } from "../utills/userValidator";
-import { UserMessage } from "../utills/constants";
+import { Errors, UserMessage } from "../utills/constants";
 import { sendEmail } from "../helper/mailServices";
 import { generateToken } from "../helper/jwt";
 import {
@@ -18,7 +18,6 @@ import {
   InvalidCredentialsError,
   VerificationEmailError,
 } from "../utills/custom_error";
-import { GraphQLError } from "graphql";
 
 class UserService {
   /**
@@ -38,7 +37,7 @@ class UserService {
    * @property {string} token - A cryptographically random string.
    * @property {Date} expires - The date and time when the token expires.
    */
-  generateToken(): { token: String; expires: Date } {
+  generateToken(): { token: string; expires: Date } {
     const token = randomBytes(32).toString("hex");
     const expires = new Date(Date.now() + 3600000);
     return { token, expires };
@@ -170,6 +169,36 @@ class UserService {
     return {
       token: token as string,
       user: user,
+    };
+  }
+
+  async forgotPassword(email: string): Promise<{
+    success: boolean;
+    message: string;
+    data?: UserAttributes;
+  }> {
+    const user = await UserModel.findOne({ email });
+
+    if (!user) {
+      logger.info(UserMessage.NotFound);
+      throw new UserExistsError(UserMessage.Exists);
+    }
+    const { token: forgotpasstoken, expires: tokenExpiry } =
+      this.generateToken();
+
+    user.forgotpasstoken = forgotpasstoken;
+    user.forgotpasstokenexpires = tokenExpiry;
+
+    await user.save();
+
+    const resetLink = `${process.env.BASE_URL}user/reset/reset-password/${forgotpasstoken}`;
+
+    sendEmail(email, UserMessage.ResetPassword, resetLink);
+    logger.info(UserMessage.EmailInstructions);
+    return {
+      success: true,
+      message: UserMessage.PasswordSuccess,
+      data: user,
     };
   }
 }

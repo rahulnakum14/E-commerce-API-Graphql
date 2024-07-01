@@ -140,6 +140,30 @@ const userResolvers = {
         throw new ApolloError(Errors.GenericError);
       }
     },
+
+    /**Sending Link of Forgot password */
+    async forgotPassword(_: any, args: { email: string }) {
+      try {
+        const result = await userService.forgotPassword(args.email);
+        if (result.success) {
+          return {
+            success: result.success,
+            message: result.message,
+            data: result.data,
+          };
+        } else {
+          logger.fatal(Errors.signUpError);
+          throw new ApolloError(Errors.signUpError);
+        }
+      } catch (error) {
+        if (error instanceof CustomError) {
+          if (error.code === "FORGOT_PASSWORD") {
+            throw new UserInputError(error.message);
+          }
+        }
+        throw new ApolloError(Errors.GenericError);
+      }
+    },
   },
 };
 

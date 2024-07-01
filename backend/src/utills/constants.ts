@@ -7,6 +7,7 @@ export const UserMessage = {
   NotFound: "User Not Found.",
   InvalidCredentials: "Invalid email or password.",
   LoginSuccess: "User Login Successfully.",
+  PasswordSuccess: "Password Reset SuccessFully",
   VerifyEmail: "Verify Your Email",
   VerifyEmailFailed: "User Email is not verified",
   ResetPassword: "Reset Your Password",
@@ -53,6 +54,7 @@ export const CartMessages = {
 /** Constant Of the Erros */
 
 export const Errors = {
+  ForgotPasswordError: "Internal server error while sending password reset link.",
   EmailError: "Enter a valid email.",
   TokenNotExist: "Unauthorized or Token does not exist",
   TokenFormat: "Invalid token format",
