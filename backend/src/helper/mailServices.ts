@@ -114,29 +114,29 @@ const verifyEmail = async (signupToken: string) => {
  * @param {Response} res - A JSON response indicating success or failure based on validation.
  * @return {*}  {Promise<Response>}
  */
-const forgotPassget = async (req: Request, res: Response) => {
-  const { token } = req.params;
-  const { password } = req.body;
+// const forgotPassget = async (req: Request, res: Response) => {
+//   const { token } = req.params;
+//   const { password } = req.body;
 
-  try {
-    const user = await findUserByToken(token, "forgotpasstoken");
+//   try {
+//     const user = await findUserByToken(token, "forgotpasstoken");
 
-    if (!user) {
-      sendErrorResponse(res, 400, "Invalid or expired token");
-      return;
-    }
+//     if (!user) {
+//       sendErrorResponse(res, 400, "Invalid or expired token");
+//       return;
+//     }
 
-    user.password = await bcrypt.hash(password, 10);
-    user.forgotpasstoken = undefined;
-    user.forgotpasstokenexpires = undefined;
+//     user.password = await bcrypt.hash(password, 10);
+//     user.forgotpasstoken = undefined;
+//     user.forgotpasstokenexpires = undefined;
 
-    await user.save();
+//     await user.save();
 
-    return successResponse(res, 200, "Password Reset SuccessFully...");
-  } catch (error) {
-    console.error(error);
-    return sendErrorResponse(res, 400, "Internal Server Error");
-  }
-};
+//     return successResponse(res, 200, "Password Reset SuccessFully...");
+//   } catch (error) {
+//     console.error(error);
+//     return sendErrorResponse(res, 400, "Internal Server Error");
+//   }
+// };
 
-export { sendEmail, verifyEmail, forgotPassget };
+export { sendEmail, verifyEmail };

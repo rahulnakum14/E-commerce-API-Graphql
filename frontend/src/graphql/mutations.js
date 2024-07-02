@@ -60,9 +60,20 @@ export const ADD_PRODUCT_CART = gql`
 `;
 
 export const FORGOT_PASSWORD = gql`
-mutation ForgotPassword ($email: String!) {
+  mutation ForgotPassword($email: String!) {
     forgotPassword(email: $email) {
-        success
+      success
+    }
+  }
+`;
+
+export const RESET_PASSWORD = gql`
+mutation ResetPassword($token: String!, $newPassword: String!) {
+    resetPassword(
+        token: $token
+        newPassword:$newPassword
+        ) {
+        msg
     }
 }
 `;

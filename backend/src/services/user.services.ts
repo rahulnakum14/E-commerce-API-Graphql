@@ -17,6 +17,7 @@ import {
   UserExistsError,
   InvalidCredentialsError,
   VerificationEmailError,
+  CustomError,
 } from "../utills/custom_error";
 
 class UserService {
@@ -172,6 +173,19 @@ class UserService {
     };
   }
 
+  /**
+   * Handles the forgot password functionality for a user.
+   *
+   * @param {string} email - The email address of the user requesting a password reset.
+   *
+   * @returns {Promise<{ success: boolean; message: string; data?: UserAttributes }>}
+   *  - A promise that resolves to an object with the following properties:
+   *     - `success`: A boolean indicating whether the forgot password request was successful.
+   *     - `message`: A message indicating the outcome of the request.
+   *     - `data` (optional): The user object containing the updated forgot password token information (if successful).
+   *
+   * @throws {UserExistsError} - Thrown if a user with the provided email address is not found.
+   */
   async forgotPassword(email: string): Promise<{
     success: boolean;
     message: string;
@@ -200,6 +214,41 @@ class UserService {
       message: UserMessage.PasswordSuccess,
       data: user,
     };
+  }
+
+  /**
+   * Resets the password for a user using a forgot password token.
+   *
+   * @param {string} token - The forgot password token received by the user.
+   * @param {string} newPassword - The new password to be set for the user.
+   *
+   * @returns {Promise<{ msg: string }>}
+   *  - A promise that resolves to an object with a message property.
+   *     - `msg`: A string message indicating the outcome of the password reset.
+   *
+   * @throws {CustomError} - Thrown if the provided token is invalid, expired, or any other error occurs.
+   */
+  async resetPassword(
+    token: string,
+    newPassword: string
+  ): Promise<{ msg: string }> {
+    const user = await UserModel.findOne({ forgotpasstoken: token });
+
+    if (
+      !user ||
+      !user.forgotpasstokenexpires ||
+      user.forgotpasstokenexpires.getTime() < Date.now()
+    ) {
+      throw new CustomError("Invalid or expired token", "TOKEN_EXPIRED");
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    user.forgotpasstoken = undefined;
+    user.forgotpasstokenexpires = undefined;
+
+    await user.save();
+
+    return { msg: "Password Reset Successfully..." };
   }
 }
 

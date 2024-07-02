@@ -1,7 +1,7 @@
 // Defaults
 import { ApolloError, UserInputError } from "apollo-server-errors";
 
-// Other Configs 
+// Other Configs
 import userService from "../../services/user.services";
 import { CustomError } from "../../utills/custom_error";
 import { verifyEmail } from "../../helper/mailServices";
@@ -162,6 +162,22 @@ const userResolvers = {
           }
         }
         throw new ApolloError(Errors.GenericError);
+      }
+    },
+
+    /** Reset Password */
+    async resetPassword(_: any, args: { token: string; newPassword: string }) {
+      try {
+        const message = await userService.resetPassword(
+          args.token,
+          args.newPassword
+        );        
+        return message;
+      } catch (error) {
+        if (error instanceof CustomError && error.code === "TOKEN_EXPIRED") {
+          throw new UserInputError(error.message);
+        }
+        throw new ApolloError("Internal Server Error");
       }
     },
   },

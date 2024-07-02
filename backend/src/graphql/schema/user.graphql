@@ -19,6 +19,10 @@ type Mutation {
 
   "Forgot Password"
   forgotPassword(email: String!): UserResponse!
+
+  "Reset Password"
+  resetPassword(token: String!, newPassword: String!): ResetPasswordResponse!
+
 }
 
 schema {

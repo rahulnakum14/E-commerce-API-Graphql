@@ -24,6 +24,9 @@ type UserLoginData {
   user: User!
 }
 
+type ResetPasswordResponse {
+  msg: String!
+}
 # type User {
 #   id: ID!
 #   username: String!

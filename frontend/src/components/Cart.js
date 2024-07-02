@@ -18,7 +18,7 @@ const Cart = () => {
   if (dataPayment) {
     const { PaymentUrl } = dataPayment.getPaymentUrl;
     window.location.href = PaymentUrl;
-    return null; // Avoid rendering the cart when redirecting
+    return null; 
   }
 
   if (!getCartDetails || getCartDetails.length === 0) {
