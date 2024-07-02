@@ -1,9 +1,0 @@
-# ENV Vars required.
-
-```
-PORT=
-EMAIL_USERNAME=
-EMAIL_PASSWORD=
-BASE_URL=
-STRIPE_SECRET_KEY=
-```

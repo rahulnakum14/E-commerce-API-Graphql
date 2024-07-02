@@ -1,0 +1,51 @@
+"""
+Information for a single user.
+"""
+type User {
+  id: ID!
+  username: String!
+  email: String!
+  password: String 
+}
+
+type UserResponse {
+  success: Boolean!
+  message: String
+  data: User!
+}
+
+type VerifyEmailResponse {
+  success: Boolean!
+  message: String!
+}
+
+type UserLoginData {
+  token: String!
+  user: User!
+}
+
+type ResetPasswordResponse {
+  msg: String!
+}
+# type User {
+#   id: ID!
+#   username: String!
+#   email: String!
+#   password: String!
+# }
+
+# type UserResponse {
+#   success: Boolean!
+#   message: String
+#   data: UserLoginData
+# }
+
+# type VerifyEmailResponse {
+#   success: Boolean!
+#   message: String!
+# }
+
+# type UserLoginData {
+#   token: String!
+#   user: User!
+# }
