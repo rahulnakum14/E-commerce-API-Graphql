@@ -54,10 +54,14 @@ const startServer = async () => {
 
   await server.start();
   await connectDb();
+  
+  const corsOptions: cors.CorsOptions = {
+    origin: '*',
+  };
 
   app.use(
     "/graphql",
-    cors(),
+    cors(corsOptions),
     express.json(),
     expressMiddleware(server, {
       context: async ({ req }) => {
