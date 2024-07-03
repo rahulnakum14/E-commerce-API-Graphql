@@ -94,7 +94,7 @@ class UserService {
 
     await newUser.save();
 
-    const verificationLink = `${process.env.BASE_URL}user/verifyEmail/${signuptoken}`;
+    const verificationLink = `https://congenial-space-eureka-jjrpqwpg5r6xh5647-3000.app.github.dev/user/verifyEmail/${signuptoken}`;
 
     sendEmail(newUser.email, UserMessage.VerifyEmail, verificationLink);
 
@@ -205,7 +205,7 @@ class UserService {
 
     await user.save();
 
-    const resetLink = `${process.env.BASE_URL}user/reset/reset-password/${forgotpasstoken}`;
+    const resetLink = `https://congenial-space-eureka-jjrpqwpg5r6xh5647-3000.app.github.dev/user/reset/reset-password/${forgotpasstoken}`;
 
     sendEmail(email, UserMessage.ResetPassword, resetLink);
     logger.info(UserMessage.EmailInstructions);

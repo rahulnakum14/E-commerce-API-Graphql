@@ -117,8 +117,8 @@ class PaymentServices {
       customer: customer.id,
       line_items: lineItems,
       mode: "payment",
-      success_url: `${process.env.BASE_URL}order/order-placed-successfully`,
-      cancel_url: `${process.env.BASE_URL}order/error-in-payment`,
+      success_url: `https://congenial-space-eureka-jjrpqwpg5r6xh5647-3000.app.github.dev/order-placed-successfully`,
+      cancel_url: `https://congenial-space-eureka-jjrpqwpg5r6xh5647-3000.app.github.dev/error-in-payment`,
       shipping_address_collection: {
         allowed_countries: ["US", "CA", "GB", "AU", "NZ", "SG", "JP"],
       },
